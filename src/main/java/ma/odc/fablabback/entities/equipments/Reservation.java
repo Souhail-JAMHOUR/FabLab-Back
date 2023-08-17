@@ -1,15 +1,14 @@
 package ma.odc.fablabback.entities.equipments;
 
 import jakarta.persistence.*;
+import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.Member;
-
-import java.util.Date;
-import java.util.List;
 
 @Entity@Data@NoArgsConstructor@AllArgsConstructor@Builder
 public class Reservation {

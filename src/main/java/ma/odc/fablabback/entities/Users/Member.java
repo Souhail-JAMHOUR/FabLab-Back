@@ -14,7 +14,7 @@ import ma.odc.fablabback.entities.equipments.Reservation;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class Member extends User {
+public class Member extends AppUser {
 
   private String status;
 

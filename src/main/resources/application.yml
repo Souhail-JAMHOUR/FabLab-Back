@@ -4,13 +4,13 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/FabLab
     username: postgres
-    password: 0000
+    password: "0000"
     driver-class-name: org.postgresql.Driver
   jpa:
     database: postgresql
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -18,7 +18,7 @@ spring:
   application:
     security:
       jwt:
-        secret-key: 885D7594D81B366FB67AEF56F61AA
+        secret-key: 6bedd1cc1529ae30a2b2a70eec4d321ddd78ab72cad1870fd8bddb763707e441
         expiration: 86400000
         refresh-token:
           expiration: 604800000

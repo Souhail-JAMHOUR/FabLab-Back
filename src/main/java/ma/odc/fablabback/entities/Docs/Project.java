@@ -15,5 +15,5 @@ public class Project {
     private Member member;
 
     @ManyToOne
-    private Admin Approver;
+    private Admin approver;
 }

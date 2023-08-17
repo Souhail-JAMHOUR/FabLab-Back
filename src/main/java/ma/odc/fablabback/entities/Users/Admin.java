@@ -1,25 +1,27 @@
 package ma.odc.fablabback.entities.Users;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ma.odc.fablabback.entities.Docs.Project;
 import ma.odc.fablabback.entities.equipments.Reservation;
-import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor @ToString @SuperBuilder
-public class Admin extends User {
+@NoArgsConstructor
+@ToString
+@SuperBuilder
+public class Admin extends AppUser {
 
-    private String poste;
+  private String poste;
 
-    @OneToMany(mappedBy = "admin")
-    private List<Reservation> approvedReservations;
+  @OneToMany(mappedBy = "admin")
+  @JsonIgnore
+  private List<Reservation> approvedReservations;
 
-
-
-    @OneToMany(mappedBy = "Approver")
-    private List<Project> approvedProjects;
+  @OneToMany(mappedBy = "approver")
+  @JsonIgnore
+  private List<Project> approvedProjects;
 }

@@ -10,14 +10,19 @@ import ma.odc.fablabback.entities.equipments.Category;
 import ma.odc.fablabback.entities.equipments.Equipment;
 import ma.odc.fablabback.entities.equipments.EquipmentReservation;
 import ma.odc.fablabback.entities.equipments.Reservation;
-import ma.odc.fablabback.repositories.*;
+import ma.odc.fablabback.enums.Sex;
 import ma.odc.fablabback.repositories.Users.AdminRepository;
+import ma.odc.fablabback.repositories.Users.AppUsersRepository;
 import ma.odc.fablabback.repositories.Users.MemberRepository;
-import ma.odc.fablabback.repositories.Users.UserRepository;
+import ma.odc.fablabback.repositories.equipments.CategoryRepository;
+import ma.odc.fablabback.repositories.equipments.EquipmentRepository;
+import ma.odc.fablabback.repositories.equipments.EquipmentReservationRepository;
+import ma.odc.fablabback.repositories.equipments.ReservationRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class FabLabBackApplication {
@@ -33,7 +38,8 @@ public class FabLabBackApplication {
             EquipmentRepository equipmentRepository,
             ReservationRepository reservationRepository,
             EquipmentReservationRepository equipmentReservationRepository,
-            UserRepository userRepository
+            AppUsersRepository appUsersRepository,
+            PasswordEncoder passwordEncoder
     ){
         return (args) -> {
             Random random = new Random();
@@ -43,18 +49,20 @@ public class FabLabBackApplication {
                     .name("super admin")
                     .cin("F283828")
                     .email("admin@odc.com")
+                    .password(passwordEncoder.encode("superadmin"))
+                    .appUsersname("superadmin")
                     .birthDate(LocalDate.now())
                     .poste("Super Admin")
                     .build();
-            userRepository.save(superAdmin);
+            appUsersRepository.save(superAdmin);
 
             Stream.of("souhail","mohammed","salma","nihad","nouha").forEach(n-> {
                 Admin admin = Admin.builder()
-                        .username("admin "+ n)
+                        .appUsersname("A-"+ n)
                         .cin("F34334")
-                        .password("sdfqsdfqsdf")
+                        .password(passwordEncoder.encode("sdfqsdfqsdf"))
                         .birthDate(LocalDate.now())
-                        .sex("male")
+                        .sex(Sex.HOMME)
                         .email(n+"@gmail.com")
                         .name(n)
                         .poste("MANAGER")
@@ -62,11 +70,11 @@ public class FabLabBackApplication {
                 adminRepository.save(admin);
 
                 Member member = Member.builder()
-                        .username("memeber " + n)
+                        .appUsersname("M-" + n)
                         .cin("F34334")
-                        .password("sdfqsdfqsdf")
+                        .password(passwordEncoder.encode("sdfqsdfqsdf"))
                         .birthDate(LocalDate.now())
-                        .sex("male")
+                        .sex(Sex.HOMME)
                         .email(n+"@gmail.com")
                         .name(n)
                         .etablissment("UIR")
@@ -91,7 +99,7 @@ public class FabLabBackApplication {
                 equipmentRepository.save(equipment);
             });
 
-            // create Equipment reservations
+            //  create Equipment reservations
             //find a way to validate the reservation in the script
 
             //List<EquipmentReservation> equipmentReservationsToAttach = new ArrayList<>();
