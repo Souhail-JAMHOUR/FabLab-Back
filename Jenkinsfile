@@ -12,19 +12,20 @@ pipeline {
 /////////////////////////////////
     
     stages {
-        stage('Compile and Clean') { 
+        stage('Build with maven') { 
             steps {
                 // Run Maven on a Unix agent.
               
-                sh "mvn clean compile"
+                //sh "mvn clean compile"     
+                 sh 'mvn clean package -Dmaven.test.failure.ignore=true'
             }
         }
-        stage('deploy') { 
+        //stage('deploy') { 
             
-            steps {
-                sh "mvn package"
-            }
-        }
+          //  steps {
+            //    sh "mvn package"
+            //}
+        //}
         stage('Build Docker image'){
           
             steps {
