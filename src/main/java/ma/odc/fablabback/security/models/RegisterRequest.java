@@ -1,5 +1,6 @@
 package ma.odc.fablabback.security.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class RegisterRequest {
   private String password;
   private String confirmedPassword;
   private String cin;
+  @JsonFormat(pattern="yyyy-MM-dd")
   private LocalDate birthDate;
   private Sex sex;
 }

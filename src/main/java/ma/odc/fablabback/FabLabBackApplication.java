@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Stream;
 import ma.odc.fablabback.entities.Users.Admin;
-import ma.odc.fablabback.entities.Users.Member;
 import ma.odc.fablabback.entities.Users.SuperAdmin;
 import ma.odc.fablabback.entities.equipments.Category;
 import ma.odc.fablabback.entities.equipments.Equipment;
@@ -57,32 +56,32 @@ public class FabLabBackApplication {
                     .build();
             appUsersRepository.save(superAdmin);
 
-            Stream.of("souhail","mohammed","salma","nihad","nouha").forEach(n-> {
-                Admin admin = Admin.builder()
-                        .appUsersname("A-"+ n)
-                        .cin("F34334")
-                        .password(passwordEncoder.encode("admin"))
-                        .birthDate(LocalDate.now())
-                        .sex(Sex.HOMME)
-                        .email(n+"@gmail.com")
-                        .name(n)
-                        .poste("MANAGER")
-                        .build();
-                adminRepository.save(admin);
-
-                Member member = Member.builder()
-                        .appUsersname("M-" + n)
-                        .cin("F34334")
-                        .password(passwordEncoder.encode("member"))
-                        .birthDate(LocalDate.now())
-                        .sex(Sex.HOMME)
-                        .email(n+"@gmail.com")
-                        .name(n)
-                        .etablissment("UIR")
-                        .status("student")
-                        .build();
-                memberRepository.save(member);
-            });
+//            Stream.of("souhail","mohammed","salma","nihad","nouha").forEach(n-> {
+//                Admin admin = Admin.builder()
+//                        .appUsersname("A-"+ n)
+//                        .cin("F34334")
+//                        .password(passwordEncoder.encode("admin"))
+//                        .birthDate(LocalDate.now())
+//                        .sex(Sex.HOMME)
+//                        .email(n+"@gmail.com")
+//                        .name(n)
+//                        .poste("MANAGER")
+//                        .build();
+//                adminRepository.save(admin);
+//
+//                Member member = Member.builder()
+//                        .appUsersname("M-" + n)
+//                        .cin("F34334")
+//                        .password(passwordEncoder.encode("member"))
+//                        .birthDate(LocalDate.now())
+//                        .sex(Sex.HOMME)
+//                        .email(n+"@gmail.com")
+//                        .name(n)
+//                        .etablissment("UIR")
+//                        .status("student")
+//                        .build();
+//                memberRepository.save(member);
+//            });
 
             Stream.of("actionneur","capteur","modules","imprimentes").forEach(n->{
                 Category category = Category.builder()

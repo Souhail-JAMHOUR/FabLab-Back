@@ -1,5 +1,6 @@
 package ma.odc.fablabback.entities.Users;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class AppUser {
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String password;
   private String cin;
+  @JsonFormat(pattern="yyyy-MM-dd")
   private LocalDate birthDate;
 
   @Enumerated(EnumType.STRING)

@@ -1,6 +1,5 @@
 package ma.odc.fablabback.security;
 
-
 import static jakarta.servlet.DispatcherType.ERROR;
 import static jakarta.servlet.DispatcherType.FORWARD;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
@@ -27,18 +26,18 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
-            (authorize) -> authorize
-                    .requestMatchers(antMatcher("/v1/**")).permitAll()
-                    .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
-                    .anyRequest().authenticated()
-
-    );
+        (authorize) ->
+            authorize
+                .requestMatchers(antMatcher("/v1/auth/signup"))
+                .permitAll()
+                .dispatcherTypeMatchers(FORWARD, ERROR)
+                .permitAll()
+                .anyRequest()
+                .authenticated());
     http.csrf(csrf -> csrf.disable());
 
     return http.build();
   }
-
-
 
   @Bean
   public PasswordEncoder passwordEncoder() {

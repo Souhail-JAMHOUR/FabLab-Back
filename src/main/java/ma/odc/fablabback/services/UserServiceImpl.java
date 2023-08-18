@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-  private PasswordEncoder passwordEncoder; // ! not to inject this as a dependency causing cycle  todo find a way by lazy inject
+  private PasswordEncoder
+      passwordEncoder; // ! not to inject this as a dependency causing cycle  todo find a way by
+                       // lazy inject
   private AppUsersRepository appUsersRepository;
   private JwtService jwtService;
 
@@ -45,6 +47,7 @@ public class UserServiceImpl implements UserService {
             .name(request.getName())
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
+            .birthDate(request.getBirthDate())
             .sex(request.getSex())
             .build();
     UserDetails userDetails =
@@ -53,7 +56,7 @@ public class UserServiceImpl implements UserService {
             .build();
     appUsersRepository.save(appUser);
     String jwtToken = jwtService.generateToken(userDetails);
-    return AuthenticationResponse.builder().token(jwtToken).build();
+    return AuthenticationResponse.builder().accessToken(jwtToken).build();
   }
 
   @Override
