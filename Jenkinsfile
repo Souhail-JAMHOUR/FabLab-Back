@@ -87,7 +87,7 @@ pipeline {
                 sh 'docker network create dev || echo "this network exists"'
                 ////////////////////////////////////////////
                
-                sh 'docker run -itd -p  0.0.0.0:8081:8080 --name bnmed/fablab-back:${BUILD_NUMBER} --network dev bnmed/fablab-back:${BUILD_NUMBER}'
+                sh 'docker run -itd -p  0.0.0.0:8081:8080 --name fablab-back_${BUILD_NUMBER} --network dev bnmed/fablab-back:${BUILD_NUMBER}'
             }
         }
         stage('Archving') { 
