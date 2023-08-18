@@ -1,0 +1,3 @@
+CREATE USER 'bnmed'@'%' IDENTIFIED BY 'password123_DONG';
+GRANT ALL PRIVILEGES ON db_example.* TO 'bnmed'@'%';
+FLUSH PRIVILEGES;
