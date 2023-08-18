@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/users")
 @AllArgsConstructor
 public class AppUsersController {
 
@@ -23,7 +23,7 @@ public class AppUsersController {
 
   private AdminRepository adminRepository;
 
-  @GetMapping("/users")
+  @GetMapping("/all")
   public List<AppUser> display() {
     return AppUsersRepository.findAll();
   }

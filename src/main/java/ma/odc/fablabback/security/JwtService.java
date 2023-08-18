@@ -21,8 +21,6 @@ public class JwtService {
 
   @Value("${spring.application.security.jwt.expiration}")
   private long jwtExpiration;
-  @Value("${spring.application.security.jwt.refresh-token.expiration}")
-  private  long refresheExpiration;
 
   public String generateToken(UserDetails userDetails) {
     return generateToken(new HashMap<>(), userDetails);

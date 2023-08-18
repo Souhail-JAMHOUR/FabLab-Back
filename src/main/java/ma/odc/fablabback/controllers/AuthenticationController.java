@@ -21,6 +21,11 @@ public class AuthenticationController {
     return ResponseEntity.ok(userServiceImpl.addNewUser(request));
   }
 
+  @PostMapping("/signin")
+  public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody RegisterRequest request) {
+    return ResponseEntity.ok(userServiceImpl.authenticte(request));
+  }
+
 
   
 }
