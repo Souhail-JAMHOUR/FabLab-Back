@@ -14,7 +14,7 @@ import ma.odc.fablabback.enums.Sex;
 @AllArgsConstructor
 @Entity
 @SuperBuilder
-@Table(name = "FAB_AppUsers")
+@Table(name = "APP_USERS")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class AppUser {
   @Id

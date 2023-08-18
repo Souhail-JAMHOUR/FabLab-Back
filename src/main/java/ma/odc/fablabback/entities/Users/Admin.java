@@ -13,6 +13,7 @@ import ma.odc.fablabback.entities.equipments.Reservation;
 @NoArgsConstructor
 @ToString
 @SuperBuilder
+@Table(name = "ADMINS")
 public class Admin extends AppUser {
 
   private String poste;

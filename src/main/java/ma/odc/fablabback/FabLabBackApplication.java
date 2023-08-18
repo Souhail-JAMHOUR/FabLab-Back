@@ -53,6 +53,7 @@ public class FabLabBackApplication {
                     .appUsersname("superadmin")
                     .birthDate(LocalDate.now())
                     .poste("Super Admin")
+                    .sex(Sex.HOMME)
                     .build();
             appUsersRepository.save(superAdmin);
 
@@ -60,7 +61,7 @@ public class FabLabBackApplication {
                 Admin admin = Admin.builder()
                         .appUsersname("A-"+ n)
                         .cin("F34334")
-                        .password(passwordEncoder.encode("sdfqsdfqsdf"))
+                        .password(passwordEncoder.encode("admin"))
                         .birthDate(LocalDate.now())
                         .sex(Sex.HOMME)
                         .email(n+"@gmail.com")
@@ -72,7 +73,7 @@ public class FabLabBackApplication {
                 Member member = Member.builder()
                         .appUsersname("M-" + n)
                         .cin("F34334")
-                        .password(passwordEncoder.encode("sdfqsdfqsdf"))
+                        .password(passwordEncoder.encode("member"))
                         .birthDate(LocalDate.now())
                         .sex(Sex.HOMME)
                         .email(n+"@gmail.com")
@@ -130,7 +131,6 @@ public class FabLabBackApplication {
                 Admin admin = adminRepository.findById(randomGenerated %2 ==0 ? randomGenerated + 1 : randomGenerated).orElse(null);
                 reservation.setAdmin(admin);
                 reservationRepository.save(reservation);
-
             });
 
 

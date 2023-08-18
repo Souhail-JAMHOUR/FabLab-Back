@@ -2,6 +2,7 @@ package ma.odc.fablabback.entities.Users;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import ma.odc.fablabback.entities.equipments.Reservation;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@Table(name = "MEMBERS")
 public class Member extends AppUser {
 
   private String status;

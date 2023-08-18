@@ -12,17 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/v1/auth")
 public class AuthenticationController {
-  private final UserServiceImpl userService;
+  private final UserServiceImpl userServiceImpl;
 
-  @GetMapping("/hello")
-  public String hello() {
-    return "HELLO SOUHAIL";
-  }
 
   @PostMapping("/signup")
   public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request)
       throws AppUserExistsException {
-    return ResponseEntity.ok(userService.addNewUser(request));
+    return ResponseEntity.ok(userServiceImpl.addNewUser(request));
   }
 
 

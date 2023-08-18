@@ -7,6 +7,8 @@ import ma.odc.fablabback.security.JwtService;
 import ma.odc.fablabback.security.models.AuthenticationResponse;
 import ma.odc.fablabback.security.models.RegisterRequest;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-  private PasswordEncoder passwordEncoder; // ! not to inject this as a dependency causing cycle
+  private PasswordEncoder passwordEncoder; // ! not to inject this as a dependency causing cycle  todo find a way by lazy inject
   private AppUsersRepository appUsersRepository;
   private JwtService jwtService;
 
@@ -45,13 +47,13 @@ public class UserServiceImpl implements UserService {
             .password(passwordEncoder.encode(request.getPassword()))
             .sex(request.getSex())
             .build();
-    //    UserDetails userDetails =
-    //        User.withUsername(request.getAppUsersname())
-    //            .password(passwordEncoder.encode(request.getPassword()))
-    //            .build();
+    UserDetails userDetails =
+        User.withUsername(request.getUsername())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .build();
     appUsersRepository.save(appUser);
-    //    String jwtToke = jwtService.generateToken(userDetails);
-    return AuthenticationResponse.builder().token("jwtToke").build();
+    String jwtToken = jwtService.generateToken(userDetails);
+    return AuthenticationResponse.builder().token(jwtToken).build();
   }
 
   @Override
