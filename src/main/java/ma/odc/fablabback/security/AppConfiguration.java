@@ -1,6 +1,5 @@
 package ma.odc.fablabback.security;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import javax.crypto.spec.SecretKeySpec;
@@ -40,10 +39,10 @@ public class AppConfiguration {
     http.authorizeHttpRequests(
         (authorize) ->
             authorize
-                .requestMatchers(antMatcher("/v1/auth/**"))
-                .permitAll()
+//                .requestMatchers(antMatcher("/v1/auth/**"))
+//                .permitAll()
                 .anyRequest()
-                .authenticated());
+                .permitAll());
 
     return http.build();
   }
