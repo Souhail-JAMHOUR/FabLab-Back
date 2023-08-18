@@ -1,6 +1,5 @@
 package ma.odc.fablabback.security;
 
-
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,8 +38,8 @@ public class AppConfiguration {
     http.authorizeHttpRequests(
         (authorize) ->
             authorize
-//                .requestMatchers(antMatcher("/v1/auth/**"))
-//                .permitAll()
+                //                .requestMatchers(antMatcher("/v1/auth/**"))
+                //                .permitAll()
                 .anyRequest()
                 .permitAll());
 
@@ -53,8 +52,7 @@ public class AppConfiguration {
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(@Lazy UserDetailsService userDetailsService)
- {
+  public AuthenticationManager authenticationManager(@Lazy UserDetailsService userDetailsService) {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
     authProvider.setPasswordEncoder(passwordEncoder());
     authProvider.setUserDetailsService(userDetailsService);
