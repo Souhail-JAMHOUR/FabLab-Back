@@ -2,6 +2,8 @@ package ma.odc.fablabback.controllers;
 
 import lombok.RequiredArgsConstructor;
 import ma.odc.fablabback.Exceptions.AppUserExistsException;
+import ma.odc.fablabback.dto.usersdto.AppUserDTO;
+import ma.odc.fablabback.security.models.AuthenticationRequest;
 import ma.odc.fablabback.security.models.AuthenticationResponse;
 import ma.odc.fablabback.security.models.RegisterRequest;
 import ma.odc.fablabback.services.UserServiceImpl;
@@ -13,16 +15,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/auth")
 public class AuthenticationController {
   private final UserServiceImpl userServiceImpl;
-
+//  private final AdminServiceImpl adminService;
 
   @PostMapping("/signup")
-  public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request)
+  public ResponseEntity<AppUserDTO> register(@RequestBody RegisterRequest request)
       throws AppUserExistsException {
-    return ResponseEntity.ok(userServiceImpl.addNewUser(request));
+    return ResponseEntity.ok(userServiceImpl.addNewMembre(request));
   }
 
   @PostMapping("/signin")
-  public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody RegisterRequest request) {
+  public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
     return ResponseEntity.ok(userServiceImpl.authenticte(request));
   }
 

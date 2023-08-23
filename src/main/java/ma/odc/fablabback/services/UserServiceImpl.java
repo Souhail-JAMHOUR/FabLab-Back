@@ -2,13 +2,23 @@ package ma.odc.fablabback.services;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import ma.odc.fablabback.Exceptions.AppUserExistsException;
+import ma.odc.fablabback.dto.usersdto.AppUserDTO;
 import ma.odc.fablabback.entities.Users.AppUser;
+import ma.odc.fablabback.entities.Users.Member;
+import ma.odc.fablabback.enums.Role;
+import ma.odc.fablabback.mappers.UserMapper;
 import ma.odc.fablabback.repositories.Users.AppUsersRepository;
+import ma.odc.fablabback.repositories.Users.MemberRepository;
+import ma.odc.fablabback.security.models.AuthenticationRequest;
 import ma.odc.fablabback.security.models.AuthenticationResponse;
 import ma.odc.fablabback.security.models.RegisterRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
@@ -17,24 +27,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
-//  private PasswordEncoder passwordEncoder; // ! LAZY INJECT
+  private UserMapper userMapper;
   private AppUsersRepository appUsersRepository;
+  private MemberRepository memberRepository;
+  private PasswordEncoder passwordEncoder;
   private JwtEncoder jwtEncoder;
   private AuthenticationManager authenticationManager;
 
-  public UserServiceImpl(
-          AppUsersRepository appUsersRepository,
-          PasswordEncoder passwordEncoder,
-          JwtEncoder jwtEncoder, AuthenticationManager authenticationManager) {
-    this.appUsersRepository = appUsersRepository;
-//    this.passwordEncoder = passwordEncoder;
-    this.jwtEncoder = jwtEncoder;
-    this.authenticationManager = authenticationManager;
-  }
-
   @Override
-  public AuthenticationResponse addNewUser(RegisterRequest request) throws AppUserExistsException {
+  public AppUserDTO addNewMembre(RegisterRequest request) throws AppUserExistsException {
     AppUser appUser = appUsersRepository.findByAppUsersname(request.getUsername()).orElse(null);
     if (appUser != null) {
       throw new AppUserExistsException();
@@ -43,36 +46,19 @@ public class UserServiceImpl implements UserService {
       throw new RuntimeException("Passwords does not match");
     }
 
-    Instant instant = Instant.now();
-    JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
-            .issuedAt(instant)
-            .expiresAt(instant.plus(10, ChronoUnit.MINUTES))
-            .subject(request.getUsername())
+    Member newUser =
+        Member.builder()
+            .birthDate(request.getBirthDate())
+            .name(request.getName())
+            .cin(request.getCin())
+            .sex(request.getSex())
+            .role(Role.MEMBER)
+            .email(request.getPassword())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .appUsersname(request.getUsername())
             .build();
-    JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(
-            JwsHeader.with(MacAlgorithm.HS256).build(),
-            jwtClaimsSet
-    );
-    String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
-    return AuthenticationResponse.builder().accessToken(jwt).build();
-    
-//    appUser =
-//        AppUser.builder()
-//            .appUsersname(request.getUsername())
-//            .cin("F642077")
-//            .name(request.getName())
-//            .email(request.getEmail())
-//            .birthDate(request.getBirthDate())
-//            .password(passwordEncoder.encode(request.getPassword()))
-//            .sex(request.getSex())
-//            .build();
-//    UserDetails userDetails =
-//        User.withUsername(request.getUsername())
-//            .password(passwordEncoder.encode(request.getPassword()))
-//            .build();
-//    appUsersRepository.save(appUser);
-//    String jwtToken = jwtService.generateToken(userDetails);
-//    return AuthenticationResponse.builder().accessToken(jwtToken).build();
+    Member savedUser = memberRepository.save(newUser);
+    return userMapper.appUserToDTO(savedUser);
   }
 
   @Override
@@ -81,20 +67,27 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public AuthenticationResponse authenticte(RegisterRequest request) {
-    authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+  public AuthenticationResponse authenticte(AuthenticationRequest request) {
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
+    System.out.println("****************AUTH**************************");
+    String scopes =
+        authentication.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.joining(" "));
 
     Instant instant = Instant.now();
-    JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
+    JwtClaimsSet jwtClaimsSet =
+        JwtClaimsSet.builder()
             .issuedAt(instant)
             .expiresAt(instant.plus(10, ChronoUnit.MINUTES))
             .subject(request.getUsername())
+            .claim("scope", scopes)
             .build();
-    JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(
-            JwsHeader.with(MacAlgorithm.HS256).build(),
-            jwtClaimsSet
-    );
+    JwtEncoderParameters jwtEncoderParameters =
+        JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), jwtClaimsSet);
     String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
     return AuthenticationResponse.builder().accessToken(jwt).build();
   }

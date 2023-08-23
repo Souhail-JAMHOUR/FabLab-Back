@@ -1,4 +1,4 @@
-package ma.odc.fablabback.dto.equipments;
+package ma.odc.fablabback.dto.equipmentsdto;
 
 import lombok.Data;
 

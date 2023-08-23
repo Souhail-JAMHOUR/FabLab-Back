@@ -1,13 +1,17 @@
 package ma.odc.fablabback.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import ma.odc.fablabback.dto.usersdto.AppUserDTO;
 import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.AppUser;
 import ma.odc.fablabback.entities.Users.Member;
+import ma.odc.fablabback.mappers.UsersMapperImpl;
 import ma.odc.fablabback.repositories.Users.AdminRepository;
 import ma.odc.fablabback.repositories.Users.AppUsersRepository;
 import ma.odc.fablabback.repositories.Users.MemberRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,14 +22,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class AppUsersController {
 
   private MemberRepository memberRepository;
+  private UsersMapperImpl usersMapper;
 
   private AppUsersRepository AppUsersRepository;
 
   private AdminRepository adminRepository;
 
   @GetMapping("/all")
-  public List<AppUser> display() {
-    return AppUsersRepository.findAll();
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
+  public List<AppUserDTO> display() {
+    List<AppUser> all = AppUsersRepository.findAll();
+    List<AppUserDTO> dtos = new ArrayList<>();
+
+    for (AppUser user : all) {
+      AppUserDTO appUserDTO = usersMapper.appUserToDTO(user);
+      dtos.add(appUserDTO);
+    }
+    return dtos;
   }
 
   @GetMapping("/members")

@@ -20,6 +20,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         if(appUser==null) throw  new RuntimeException("User does not exists");
         UserDetails userDetails = User.withUsername(appUser.getAppUsersname())
                 .password(appUser.getPassword())
+                .authorities(appUser.getAuthorities())
                 .build();
         return userDetails;
     }

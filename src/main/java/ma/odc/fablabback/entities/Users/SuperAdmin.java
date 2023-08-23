@@ -8,10 +8,11 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @SuperBuilder
-@Data @NoArgsConstructor @AllArgsConstructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "SUPER_ADMINS")
 public class SuperAdmin extends Admin {
 
-    private String superAdminSpecific;
-
+  private String superAdminSpecific;
 }

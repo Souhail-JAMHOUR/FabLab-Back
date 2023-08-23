@@ -27,4 +27,6 @@ public class Member extends AppUser {
 
   @OneToMany(mappedBy = "member")
   private Set<Project> projects;
+
+  
 }

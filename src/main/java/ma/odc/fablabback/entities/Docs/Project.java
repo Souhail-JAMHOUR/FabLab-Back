@@ -3,6 +3,7 @@ package ma.odc.fablabback.entities.Docs;
 import jakarta.persistence.*;
 import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.Member;
+import ma.odc.fablabback.enums.ProjectState;
 
 @Entity
 public class Project {
@@ -16,4 +17,6 @@ public class Project {
 
     @ManyToOne
     private Admin approver;
+    @Enumerated(EnumType.STRING)
+    private ProjectState projectState;
 }

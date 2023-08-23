@@ -1,7 +1,9 @@
-package ma.odc.fablabback.dto.users;
+package ma.odc.fablabback.dto.usersdto;
 
 import java.time.LocalDate;
 import lombok.Data;
+import ma.odc.fablabback.enums.Role;
+import ma.odc.fablabback.enums.Sex;
 
 @Data
 public class AppUserDTO {
@@ -10,6 +12,7 @@ public class AppUserDTO {
   private String email;
   private String cin;
   private LocalDate birthDate;
-  private String sex;
+  private Sex sex;
   private String AppUsersname;
+  private Role role;
 }

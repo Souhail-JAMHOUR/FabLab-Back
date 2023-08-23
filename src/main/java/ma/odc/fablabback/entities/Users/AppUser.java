@@ -4,11 +4,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ma.odc.fablabback.enums.Role;
 import ma.odc.fablabback.enums.Sex;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
 @NoArgsConstructor
@@ -17,14 +23,16 @@ import ma.odc.fablabback.enums.Sex;
 @SuperBuilder
 @Table(name = "APP_USERS")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class AppUser {
+public class AppUser implements UserDetails {
+
+  private String email;
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long AppUsersId;
-
   private String appUsersname;
   private String name;
-  private String email;
+  @Enumerated(EnumType.STRING)
+  private Role role;
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String password;
   private String cin;
@@ -33,4 +41,34 @@ public class AppUser {
 
   @Enumerated(EnumType.STRING)
   private Sex sex;
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of(new SimpleGrantedAuthority(role.name()));
+  }
+
+  @Override
+  public String getUsername() {
+    return this.getAppUsersname();
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 }

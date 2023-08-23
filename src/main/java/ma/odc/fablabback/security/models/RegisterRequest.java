@@ -1,5 +1,6 @@
 package ma.odc.fablabback.security.models;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,6 @@ public class RegisterRequest {
   private String cin;
   @JsonFormat(pattern="yyyy-MM-dd")
   private LocalDate birthDate;
+  @JsonEnumDefaultValue
   private Sex sex;
 }
