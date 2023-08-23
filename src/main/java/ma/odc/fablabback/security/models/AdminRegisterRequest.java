@@ -13,7 +13,7 @@ import ma.odc.fablabback.enums.Sex;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RegisterRequest {
+public class AdminRegisterRequest {
   private String username;
   private String name;
   private String email;
@@ -24,4 +24,5 @@ public class RegisterRequest {
   private LocalDate birthDate;
   @JsonEnumDefaultValue
   private Sex sex;
+  private String poste;
 }

@@ -1,5 +1,6 @@
 package ma.odc.fablabback.services;
 
+import lombok.AllArgsConstructor;
 import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.AppUser;
 import ma.odc.fablabback.repositories.Users.AdminRepository;
@@ -8,6 +9,7 @@ import ma.odc.fablabback.security.models.AuthenticationRequest;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class AdminServiceImpl implements IAdminService {
   private AppUsersRepository appUsersRepository;
   private AdminRepository adminRepository;
