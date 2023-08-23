@@ -30,4 +30,17 @@ public class Reservation {
 
     @OneToMany(mappedBy = "reservation")
     private List<EquipmentReservation> equipmentReservationList;
+
+
+
+    ////// states
+
+    public void setState(ReservationStates state) {
+        this.state = state;
+    }
+
+    @Embedded
+    private ReservationStates state;
+
+
 }
