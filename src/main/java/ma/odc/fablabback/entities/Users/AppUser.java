@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ma.odc.fablabback.enums.Sex;
+import ma.odc.fablabback.enums.ESex;
 
 @Data
 @NoArgsConstructor
@@ -32,5 +32,5 @@ public class AppUser {
   private LocalDate birthDate;
 
   @Enumerated(EnumType.STRING)
-  private Sex sex;
+  private ESex ESex;
 }

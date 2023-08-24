@@ -9,38 +9,33 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.Member;
+import ma.odc.fablabback.enums.EReservationState;
+import org.springframework.stereotype.Component;
 
-@Entity@Data@NoArgsConstructor@AllArgsConstructor@Builder
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Component
 public class Reservation {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String reservationId;
 
+  @Temporal(TemporalType.DATE)
+  private Date startDate;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String reservationId;
-    @Temporal(TemporalType.DATE)
-    private Date startDate;
-    @Temporal(TemporalType.DATE)
-    private Date endDate;
+  @Temporal(TemporalType.DATE)
+  private Date endDate;
 
-    @ManyToOne
-    private Member member;
-    @ManyToOne
-    private Admin admin;
+  @ManyToOne private Member member;
+  @ManyToOne private Admin admin;
 
-    @OneToMany(mappedBy = "reservation")
-    private List<EquipmentReservation> equipmentReservationList;
+  @OneToMany(mappedBy = "reservation")
+  private List<EquipmentReservation> equipmentReservationList;
 
-
-
-    ////// states
-
-    public void setState(ReservationStates state) {
-        this.state = state;
-    }
-
-    @Embedded
-    private ReservationStates state;
-
-
+  @Enumerated(EnumType.STRING)
+  private EReservationState stateName = EReservationState.ONHOLD;
 }

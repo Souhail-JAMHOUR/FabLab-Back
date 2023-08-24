@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ma.odc.fablabback.enums.Sex;
+import ma.odc.fablabback.enums.ESex;
 
 @Data
 @NoArgsConstructor
@@ -21,5 +21,5 @@ public class RegisterRequest {
   private String cin;
   @JsonFormat(pattern="yyyy-MM-dd")
   private LocalDate birthDate;
-  private Sex sex;
+  private ESex ESex;
 }

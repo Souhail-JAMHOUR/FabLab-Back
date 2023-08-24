@@ -10,7 +10,7 @@ import ma.odc.fablabback.entities.equipments.Category;
 import ma.odc.fablabback.entities.equipments.Equipment;
 import ma.odc.fablabback.entities.equipments.EquipmentReservation;
 import ma.odc.fablabback.entities.equipments.Reservation;
-import ma.odc.fablabback.enums.Sex;
+import ma.odc.fablabback.enums.ESex;
 import ma.odc.fablabback.repositories.Users.AdminRepository;
 import ma.odc.fablabback.repositories.Users.AppUsersRepository;
 import ma.odc.fablabback.repositories.Users.MemberRepository;
@@ -53,7 +53,7 @@ public class FabLabBackApplication {
                     .appUsersname("superadmin")
                     .birthDate(LocalDate.now())
                     .poste("Super Admin")
-                    .sex(Sex.HOMME)
+                    .ESex(ESex.HOMME)
                     .build();
             appUsersRepository.save(superAdmin);
 
@@ -63,7 +63,7 @@ public class FabLabBackApplication {
                         .cin("F34334")
                         .password(passwordEncoder.encode("admin"))
                         .birthDate(LocalDate.now())
-                        .sex(Sex.HOMME)
+                        .ESex(ESex.HOMME)
                         .email(n+"@gmail.com")
                         .name(n)
                         .poste("MANAGER")
@@ -75,7 +75,7 @@ public class FabLabBackApplication {
                         .cin("F34334")
                         .password(passwordEncoder.encode("member"))
                         .birthDate(LocalDate.now())
-                        .sex(Sex.HOMME)
+                        .ESex(ESex.HOMME)
                         .email(n+"@gmail.com")
                         .name(n)
                         .etablissment("UIR")
