@@ -35,12 +35,76 @@ public class Reservation {
 
     ////// states
 
-    public void setState(ReservationStates state) {
-        this.state = state;
-    }
+
 
     @Embedded
-    private ReservationStates state;
+    private ReservationStates state= OnHoldState.getInstance();
+
+    public  void start() throws RuntimeException{
+        try {
+            state.start(this);
+
+
+        }catch (RuntimeException r)
+        {
+            System.out.println(r.getMessage());
+        }
+
+    }
+    public  void cancel() throws RuntimeException{
+        try {
+
+            state.cancel(this);
+        }catch (RuntimeException r)
+        {
+            System.out.println(r.getMessage());
+        }
+
+    }
+    public  void confirm() throws RuntimeException{
+        try {
+            state.confirm(this);
+
+
+        }catch (RuntimeException r)
+        {
+            System.out.println(r.getMessage());
+        }
+
+    }
+    public  void reject() throws RuntimeException{
+        try {
+            state.reject(this);
+
+        }catch (RuntimeException r)
+        {
+            System.out.println(r.getMessage());
+        }
+
+    }
+    public  void delete() throws RuntimeException{
+
+        try {
+            state.delete(this);
+
+        }catch (RuntimeException r)
+        {
+            System.out.println(r.getMessage());
+        }
+
+
+    }
+    public  void end()throws RuntimeException{
+        try {
+            state.end(this);
+
+        }catch (RuntimeException r)
+        {
+            System.out.println(r.getMessage());
+        }
+
+    }
+
 
 
 }
