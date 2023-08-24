@@ -9,26 +9,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.Member;
-import ma.odc.fablabback.enums.EReservationState;
-import org.springframework.stereotype.Component;
 
-@Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Component
+@Entity@Data@NoArgsConstructor@AllArgsConstructor@Builder
 public class Reservation {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private String reservationId;
 
-  @Temporal(TemporalType.DATE)
-  private Date startDate;
 
-  @Temporal(TemporalType.DATE)
-  private Date endDate;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String reservationId;
+    @Temporal(TemporalType.DATE)
+    private Date startDate;
+    @Temporal(TemporalType.DATE)
+    private Date endDate;
 
     @ManyToOne
     private Member member;
@@ -46,10 +39,6 @@ public class Reservation {
 
     @Embedded
     private ReservationStates state= OnHoldState.getInstance();
-  @OneToMany(mappedBy = "reservation")
-  private List<EquipmentReservation> equipmentReservationList;
-  @Enumerated(EnumType.STRING)
-  private EReservationState stateName = EReservationState.ONHOLD;
 
     public  void start() throws RuntimeException{
         try {
@@ -62,7 +51,6 @@ public class Reservation {
         }
 
     }
-
     public  void cancel() throws RuntimeException{
         try {
 
@@ -73,7 +61,6 @@ public class Reservation {
         }
 
     }
-
     public  void confirm() throws RuntimeException{
         try {
             state.confirm(this);
@@ -85,7 +72,6 @@ public class Reservation {
         }
 
     }
-
     public  void reject() throws RuntimeException{
         try {
             state.reject(this);
@@ -96,7 +82,6 @@ public class Reservation {
         }
 
     }
-    
     public  void delete() throws RuntimeException{
 
         try {
@@ -109,7 +94,6 @@ public class Reservation {
 
 
     }
-
     public  void end()throws RuntimeException{
         try {
             state.end(this);
@@ -120,4 +104,7 @@ public class Reservation {
         }
 
     }
+
+
+
 }

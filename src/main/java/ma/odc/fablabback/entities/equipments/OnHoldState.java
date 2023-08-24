@@ -8,72 +8,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class OnHoldState extends ReservationStates{
 
+    private   RejectedState rej;
+    private ConfirmedState cnf;
 
+    public OnHoldState() {
+        super("On Hold ");
 
-
-
-    @Override
-    public void start(Reservation reservation) throws RuntimeException {
-        throw new RuntimeException("changement de state invalide");
     }
 
-    @Override
-    public void cancel(Reservation reservation) throws RuntimeException {
-        throw new RuntimeException("changement de state invalide");
+    void confirm(Reservation res){
+        res.setState(cnf);
     }
-
-    @Override
-    public void confirm(Reservation res){
-        res.setState(ConfirmedState.getInstance());
+    void reject(Reservation res){
+        res.setState(rej);
     }
     @Override
-    public void reject(Reservation res){
-        res.setState(RejectedState.getInstance());
+    void printState() {
+        System.out.println("this Reservation is On Hold");
     }
-
-    @Override
-    public void delete(Reservation reservation) throws RuntimeException {
-
-            throw new RuntimeException("changement de state invalide");
-
-
-
-    }
-
-    @Override
-    public void end(Reservation reservation) throws RuntimeException {
-        throw new RuntimeException("changement de state invalide");
-
-    }
-
-
-    // Static variable reference of single_instance
-
-    private static OnHoldState single_instance = null;
-
-
-    // Constructor
-    // Here we will be creating private constructor
-    // restricted to this class itself
-    private OnHoldState()
-    {
-        super("On Hold State");
-
-    }
-
-
-    public static synchronized OnHoldState getInstance()
-    {
-        if (single_instance == null)
-            single_instance = new OnHoldState();
-
-        return single_instance;
-    }
-
-
-
-    //@Override
-   // void printState() {
-      //  System.out.println("this Reservation is On Hold");
-   // }
 }

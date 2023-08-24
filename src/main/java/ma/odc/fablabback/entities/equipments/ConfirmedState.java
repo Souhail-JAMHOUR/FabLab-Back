@@ -5,72 +5,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ConfirmedState extends ReservationStates{
+    private  RejectedState rej;
+    private  InProgressState inp;
 
 
 
 
-
-    @Override
     public void start(Reservation res ){
-            res.setState(InProgressState.getInstance());
+            res.setState(inp);
 
     }
-    @Override
     public void cancel(Reservation res){
-        res.setState(RejectedState.getInstance());
+        res.setState(rej);
     }
 
     @Override
-    public void confirm(Reservation reservation) throws RuntimeException {
-        throw new RuntimeException("changement de state invalide");
-    }
-
-    @Override
-    public void reject(Reservation reservation) throws RuntimeException {
-        throw new RuntimeException("changement de state invalide");
-    }
-
-    @Override
-    public void delete(Reservation reservation) throws RuntimeException {
-        throw new RuntimeException("changement de state invalide");
-    }
-
-    @Override
-    public void end(Reservation reservation) throws RuntimeException {
-        throw new RuntimeException("changement de state invalide");
-    }
-
-
-    // Static variable reference of single_instance
-
-    private static ConfirmedState single_instance = null;
-
-
-    // Constructor
-    // Here we will be creating private constructor
-    // restricted to this class itself
-    private ConfirmedState()
-    {
-        super("Confirmed State");
+    public void printState() {
+        System.out.println("this Reservation ois confirmed");
 
     }
-
-
-    public static synchronized ConfirmedState getInstance()
-    {
-        if (single_instance == null)
-            single_instance = new ConfirmedState();
-
-        return single_instance;
-    }
-
-
-
-
-
-//    @Override
-//    public void printState() {
-//        System.out.println("this Reservation ois confirmed");
-//
-//    }
 }
