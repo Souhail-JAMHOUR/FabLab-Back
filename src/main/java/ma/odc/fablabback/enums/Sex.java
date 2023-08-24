@@ -1,5 +1,5 @@
 package ma.odc.fablabback.enums;
 
-public enum ESex {
+public enum Sex {
     HOMME, FEMME
 }

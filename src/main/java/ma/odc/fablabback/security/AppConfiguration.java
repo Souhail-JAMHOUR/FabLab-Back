@@ -35,6 +35,7 @@ public class AppConfiguration {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.disable());
     http.oauth2ResourceServer(oa -> oa.jwt(Customizer.withDefaults()));
+    http.headers().frameOptions().disable();
     //    http.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     http.authorizeHttpRequests(
         (authorize) ->

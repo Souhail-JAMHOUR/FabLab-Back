@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
             .email(request.getEmail())
             .birthDate(request.getBirthDate())
             .password(passwordEncoder.encode(request.getPassword()))
-            .ESex(request.getESex())
+            .sex(request.getSex())
             .build();
     UserDetails userDetails =
         User.withUsername(request.getUsername())

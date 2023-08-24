@@ -1,31 +1,77 @@
 package ma.odc.fablabback.entities.equipments;
 
 
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import ma.odc.fablabback.enums.EReservationState;
 import org.springframework.stereotype.Component;
-
 
 @Component
 public class InProgressState extends ReservationStates{
 
-   private  RejectedState rej;
-    private  AlreadyPassedState alr;
-    public InProgressState(){
+
+
+
+
+    private static InProgressState single_instance = null;
+
+    // Constructor
+    // Here we will be creating private constructor
+    // restricted to this class itself
+    private InProgressState()
+    {
+        super(EReservationState.IN_PROGRESS);
 
     }
 
+    public static synchronized InProgressState getInstance()
+    {
+        if (single_instance == null)
+            single_instance = new InProgressState();
 
-    void end(Reservation res){
-        res.setState(alr);
-    }
-    void cancel(Reservation res){
-        res.setState(rej);
+        return single_instance;
     }
 
     @Override
-    public void printState() {
-        System.out.println("this Reservation is In Progress");
+    public void end(Reservation res) throws RuntimeException{
+        res.setState(AlreadyPassedState.getInstance());
+    }
+
+    @Override
+    public void start(Reservation reservation) throws RuntimeException {
+        throw new RuntimeException("changement de state invalide");
 
     }
+
+    @Override
+    public void cancel(Reservation res) throws RuntimeException{
+        res.setState(RejectedState.getInstance());
+    }
+
+
+    // Static variable reference of single_instance
+
+    @Override
+    public void confirm(Reservation reservation) throws RuntimeException {
+        throw new RuntimeException("changement de state invalide");
+
+    }
+
+    @Override
+    public void reject(Reservation reservation) throws RuntimeException {
+        throw new RuntimeException("changement de state invalide");
+
+    }
+
+    @Override
+    public void delete(Reservation reservation) throws RuntimeException {
+        throw new RuntimeException("changement de state invalide");
+
+    }
+
+
+
+//    @Override
+//    public void printState() {
+//        System.out.println("this Reservation is In Progress");
+//
+//    }
 }
