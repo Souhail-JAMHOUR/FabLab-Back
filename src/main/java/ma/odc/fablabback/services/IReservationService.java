@@ -7,6 +7,12 @@ import ma.odc.fablabback.dto.usersdto.AdminDTO;
 import ma.odc.fablabback.dto.usersdto.MemberDTO;
 
 public interface IReservationService {
-    ReservationDTO addNewReservation(MemberDTO memberDTO, AdminDTO adminDTO, List<EquipmentReservationDTO> equipmentReservationDTOList);
-    ReservationDTO getReservation(Long id);
+  ReservationDTO addNewReservation(
+      MemberDTO memberDTO, List<EquipmentReservationDTO> equipmentReservationDTOList);
+
+  ReservationDTO getReservation(Long id);
+
+  ReservationDTO approveReservation(Long id, AdminDTO adminDTO);
+
+  ReservationDTO rejectReservation(Long id);
 }
