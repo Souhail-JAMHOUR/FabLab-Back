@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.Member;
-import ma.odc.fablabback.enums.ReservationState;
 
 @Entity
 @Data
@@ -33,7 +32,5 @@ public class Reservation {
 
   @OneToMany(mappedBy = "reservation")
   private List<EquipmentReservation> equipmentReservationList;
-
-  @Enumerated(EnumType.STRING)
-  private ReservationState reservationState;
+  
 }

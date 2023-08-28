@@ -10,7 +10,6 @@ import ma.odc.fablabback.entities.equipments.Category;
 import ma.odc.fablabback.entities.equipments.Equipment;
 import ma.odc.fablabback.entities.equipments.EquipmentReservation;
 import ma.odc.fablabback.entities.equipments.Reservation;
-import ma.odc.fablabback.enums.ReservationState;
 import ma.odc.fablabback.enums.Role;
 import ma.odc.fablabback.enums.Sex;
 import ma.odc.fablabback.repositories.Users.AdminRepository;
@@ -131,7 +130,6 @@ public class FabLabBackApplication {
                               .endDate(new Date())
                               .member(member)
                               .equipmentReservationList(new ArrayList<>())
-                              .reservationState(ReservationState.ONHOLD)
                               .build();
                       reservationRepository.save(reservation);
 
