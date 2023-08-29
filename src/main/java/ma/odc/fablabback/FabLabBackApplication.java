@@ -22,6 +22,7 @@ import ma.odc.fablabback.repositories.equipments.ReservationRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
@@ -31,7 +32,7 @@ public class FabLabBackApplication {
     SpringApplication.run(FabLabBackApplication.class, args);
   }
 
-//  @Bean
+  @Bean
   CommandLineRunner start(
       AdminRepository adminRepository,
       MemberRepository memberRepository,
@@ -133,14 +134,28 @@ public class FabLabBackApplication {
                               .build();
                       reservationRepository.save(reservation);
 
-                      EquipmentReservation equipmentReservation =
-                          EquipmentReservation.builder()
-                              .equipment(e)
-                              .requestedQuantity(12)
-                              .reservation(reservation)
-                              .build();
-                      equipmentReservationRepository.save(equipmentReservation);
+                      List<EquipmentReservation> equipmentReservations = new ArrayList<>();
+
+                      for (Equipment equipment : equipmentList){
+                          EquipmentReservation equipmentReservation = EquipmentReservation.builder()
+                                  .requestedQuantity(10)
+                                  .equipment(equipment)
+                                  .reservation(reservation)
+                                  .build();
+                          equipmentReservations.add(equipmentReservation);
+                          equipmentReservationRepository.save(equipmentReservation);
+                      }
                       reservationRepository.save(reservation);
+
+
+//                      EquipmentReservation equipmentReservation =
+//                          EquipmentReservation.builder()
+//                              .equipment(e)
+//                              .requestedQuantity(12)
+//                              .reservation(reservation)
+//                              .build();
+//                      equipmentReservationRepository.save(equipmentReservation);
+//                      reservationRepository.save(reservation);
                     });
           });
 

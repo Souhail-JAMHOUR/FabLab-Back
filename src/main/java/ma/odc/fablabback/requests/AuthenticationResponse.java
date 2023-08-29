@@ -1,4 +1,4 @@
-package ma.odc.fablabback.security.models;
+package ma.odc.fablabback.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

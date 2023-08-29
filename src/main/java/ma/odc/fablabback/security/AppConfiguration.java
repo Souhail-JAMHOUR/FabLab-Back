@@ -40,10 +40,10 @@ public class AppConfiguration {
     http.authorizeHttpRequests(
         (authorize) ->
             authorize
-                .requestMatchers("/v1/auth/**","/swagger-ui/**","/v3/api-docs/**")
-                .permitAll()
+//                .requestMatchers("/v1/auth/**","/swagger-ui/**","/v3/api-docs/**")
+//                .permitAll()
                 .anyRequest()
-                .authenticated()
+                .permitAll()
     );
 
     return http.build();

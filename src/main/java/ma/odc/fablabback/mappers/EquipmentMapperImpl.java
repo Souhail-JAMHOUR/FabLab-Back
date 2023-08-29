@@ -1,5 +1,8 @@
 package ma.odc.fablabback.mappers;
 
+import java.util.ArrayList;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentDTO;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentReservationDTO;
 import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
@@ -7,8 +10,12 @@ import ma.odc.fablabback.entities.equipments.Equipment;
 import ma.odc.fablabback.entities.equipments.EquipmentReservation;
 import ma.odc.fablabback.entities.equipments.Reservation;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class EquipmentMapperImpl implements IEquipmentMapper {
+  private final UsersMapperImpl usersMapper;
   @Override
   public EquipmentDTO equipmentToDTO(Equipment equipment) {
     EquipmentDTO equipmentDTO = new EquipmentDTO();
@@ -42,7 +49,18 @@ public class EquipmentMapperImpl implements IEquipmentMapper {
   @Override
   public ReservationDTO reservationToDTO(Reservation reservation) {
     ReservationDTO reservationDTO = new ReservationDTO();
+    List<EquipmentReservation> equipmentReservationList = reservation.getEquipmentReservationList();
+    List<EquipmentReservationDTO> equipmentReservationDTOS = new ArrayList<>();
     BeanUtils.copyProperties(reservation, reservationDTO);
+    for(EquipmentReservation er : equipmentReservationList){
+      EquipmentReservationDTO equipmentReservationDTO = equipmentReservationToDTO(er);
+      equipmentReservationDTOS.add(equipmentReservationDTO);
+    }
+    reservationDTO.setMember(usersMapper.membreToDTO(reservation.getMember()));
+    if(reservation.getAdmin()!=null){
+      reservationDTO.setAdmin(usersMapper.adminToDTO(reservation.getAdmin()));
+    }
+    reservationDTO.setEquipmentReservationListDTO(equipmentReservationDTOS);
     return reservationDTO;
   }
 

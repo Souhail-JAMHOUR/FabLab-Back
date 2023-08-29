@@ -1,4 +1,4 @@
-package ma.odc.fablabback.security.models;
+package ma.odc.fablabback.requests;
 
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,7 +13,7 @@ import ma.odc.fablabback.enums.Sex;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserRegisterRequest {
+public class AdminRegisterRequest {
   private String username;
   private String name;
   private String email;
@@ -24,4 +24,5 @@ public class UserRegisterRequest {
   private LocalDate birthDate;
   @JsonEnumDefaultValue
   private Sex sex;
+  private String poste;
 }
