@@ -1,9 +1,14 @@
 package ma.odc.fablabback.services;
 
-import ma.odc.fablabback.entities.Users.AppUser;
+import java.util.List;
+import ma.odc.fablabback.dto.usersdto.MemberDTO;
 
 public interface IMemebreService {
 
-    boolean verifiyMembre(AppUser user);
+    List<MemberDTO> getAllMembers();
+    MemberDTO getMemberById(Long id);
+    MemberDTO getMemberByUsername(String username);
+    MemberDTO updateMember(MemberDTO memberDTO);
+    void deleteMember(Long id);
     
 }

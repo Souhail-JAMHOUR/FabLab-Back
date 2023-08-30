@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class EquipmentMapperImpl implements IEquipmentMapper {
+public class EquipmentMapper implements IEquipmentMapper {
   private final UsersMapperImpl usersMapper;
   @Override
   public EquipmentDTO equipmentToDTO(Equipment equipment) {
@@ -35,6 +35,9 @@ public class EquipmentMapperImpl implements IEquipmentMapper {
       EquipmentReservation equipmentReservation) {
     EquipmentReservationDTO equipmentReservationDTO = new EquipmentReservationDTO();
     BeanUtils.copyProperties(equipmentReservation, equipmentReservationDTO);
+    Equipment equipment = equipmentReservation.getEquipment();
+    EquipmentDTO equipmentDTO = equipmentToDTO(equipment);
+    equipmentReservationDTO.setEquipmentDTO(equipmentDTO);
     return equipmentReservationDTO;
   }
 

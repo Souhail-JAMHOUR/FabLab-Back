@@ -2,18 +2,19 @@ package ma.odc.fablabback.controllers;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import ma.odc.fablabback.Exceptions.AppUsersNotFoundException;
-import ma.odc.fablabback.Exceptions.ReservationNotFoundException;
 import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
-import ma.odc.fablabback.services.IReservationServiceImpl;
+import ma.odc.fablabback.exceptions.AppUsersNotFoundException;
+import ma.odc.fablabback.exceptions.ReservationNotFoundException;
+import ma.odc.fablabback.services.ReservationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/reservation/")
 @RequiredArgsConstructor
 public class ReservationController {
-  private final IReservationServiceImpl reservationService;
+  private final ReservationService reservationService;
 
   @GetMapping("/all")
   public ResponseEntity<List<ReservationDTO>> getAllReservation() {
@@ -31,7 +32,8 @@ public class ReservationController {
     }
   }
 
-  @PatchMapping("/approve/{id}")
+  @PostMapping("/approve/{id}")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<String> approveReservation(@PathVariable String id) {
     try {
       reservationService.approveReservation(id);

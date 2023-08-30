@@ -1,9 +1,9 @@
 package ma.odc.fablabback.services;
 
 import java.util.List;
-import ma.odc.fablabback.Exceptions.AppUsersNotFoundException;
-import ma.odc.fablabback.Exceptions.ReservationNotFoundException;
 import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
+import ma.odc.fablabback.exceptions.AppUsersNotFoundException;
+import ma.odc.fablabback.exceptions.ReservationNotFoundException;
 import ma.odc.fablabback.requests.ReservationRequest;
 
 public interface IReservationService {

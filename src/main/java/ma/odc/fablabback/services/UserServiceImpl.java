@@ -2,20 +2,19 @@ package ma.odc.fablabback.services;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import ma.odc.fablabback.Exceptions.AppUserExistsException;
-import ma.odc.fablabback.dto.usersdto.AdminDTO;
 import ma.odc.fablabback.dto.usersdto.AppUserDTO;
-import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.AppUser;
 import ma.odc.fablabback.entities.Users.Member;
 import ma.odc.fablabback.enums.Role;
+import ma.odc.fablabback.exceptions.AppUserExistsException;
 import ma.odc.fablabback.mappers.UserMapper;
-import ma.odc.fablabback.repositories.Users.AdminRepository;
+import ma.odc.fablabback.mappers.UsersMapperImpl;
 import ma.odc.fablabback.repositories.Users.AppUsersRepository;
 import ma.odc.fablabback.repositories.Users.MemberRepository;
-import ma.odc.fablabback.requests.AdminRegisterRequest;
 import ma.odc.fablabback.requests.AuthenticationRequest;
 import ma.odc.fablabback.requests.AuthenticationResponse;
 import ma.odc.fablabback.requests.UserRegisterRequest;
@@ -35,17 +34,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
   private UserMapper userMapper;
   private AppUsersRepository appUsersRepository;
-  private AdminRepository adminRepository;
   private MemberRepository memberRepository;
   private PasswordEncoder passwordEncoder;
   private JwtEncoder jwtEncoder;
   private AuthenticationManager authenticationManager;
+  private UsersMapperImpl usersMapper;
 
   @Override
   public AppUserDTO addNewMembre(UserRegisterRequest request) throws AppUserExistsException {
     AppUser appUser = appUsersRepository.findByAppUsersname(request.getUsername()).orElse(null);
     if (appUser != null) {
-      throw new AppUserExistsException();
+      throw new AppUserExistsException("User does not exists");
     }
     if (!request.getPassword().equals(request.getConfirmedPassword())) {
       throw new RuntimeException("Passwords does not match");
@@ -58,9 +57,11 @@ public class UserServiceImpl implements UserService {
             .cin(request.getCin())
             .sex(request.getSex())
             .role(Role.MEMBER)
-            .email(request.getPassword())
+            .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
             .appUsersname(request.getUsername())
+            .status(request.getStatus())
+            .etablissment(request.getEtablissment())
             .build();
     Member savedUser = memberRepository.save(newMembre);
     return userMapper.appUserToDTO(savedUser);
@@ -72,12 +73,13 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public AuthenticationResponse authenticte(AuthenticationRequest request) {
+  public AuthenticationResponse authenticate(AuthenticationRequest request) {
     Authentication authentication =
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-    System.out.println("****************AUTH**************************");
+    //    ! System.out.println("****************AUTH**************************");
+
     String scopes =
         authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
@@ -97,19 +99,15 @@ public class UserServiceImpl implements UserService {
     return AuthenticationResponse.builder().accessToken(jwt).build();
   }
 
-  public AdminDTO addNewAdmin(AdminRegisterRequest request){
-    Admin newAdmin = Admin.builder()
-            .role(Role.ADMIN)
-            .name(request.getName())
-            .sex(request.getSex())
-            .cin(request.getCin())
-            .appUsersname(request.getUsername())
-            .email(request.getEmail())
-            .birthDate(request.getBirthDate())
-            .password(passwordEncoder.encode(request.getPassword()))
-            .poste(request.getPoste())
-            .build();
-    adminRepository.save(newAdmin);
-    return userMapper.adminToDTO(newAdmin);
+  @Override
+  public List<AppUserDTO> getAllUsers() {
+    List<AppUser> all = appUsersRepository.findAll();
+    List<AppUserDTO> dtos = new ArrayList<>();
+
+    for (AppUser user : all) {
+      AppUserDTO appUserDTO = usersMapper.appUserToDTO(user);
+      dtos.add(appUserDTO);
+    }
+    return dtos;
   }
 }

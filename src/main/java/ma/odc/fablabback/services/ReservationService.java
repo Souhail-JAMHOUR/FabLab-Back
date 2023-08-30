@@ -3,8 +3,6 @@ package ma.odc.fablabback.services;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import ma.odc.fablabback.Exceptions.AppUsersNotFoundException;
-import ma.odc.fablabback.Exceptions.ReservationNotFoundException;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentReservationDTO;
 import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
 import ma.odc.fablabback.dto.usersdto.AdminDTO;
@@ -12,7 +10,9 @@ import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.Member;
 import ma.odc.fablabback.entities.equipments.EquipmentReservation;
 import ma.odc.fablabback.entities.equipments.Reservation;
-import ma.odc.fablabback.mappers.EquipmentMapperImpl;
+import ma.odc.fablabback.exceptions.AppUsersNotFoundException;
+import ma.odc.fablabback.exceptions.ReservationNotFoundException;
+import ma.odc.fablabback.mappers.EquipmentMapper;
 import ma.odc.fablabback.mappers.UsersMapperImpl;
 import ma.odc.fablabback.repositories.equipments.ReservationRepository;
 import ma.odc.fablabback.requests.ReservationRequest;
@@ -24,11 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 @Service
 @Transactional
-public class IReservationServiceImpl implements IReservationService {
-  private EquipmentMapperImpl equipmentMapper;
+public class ReservationService implements IReservationService {
+  private EquipmentMapper equipmentMapper;
   private UsersMapperImpl usersMapper;
   private ReservationRepository reservationRepository;
-  private IEquipmentServiceImpl equipmentService;
+  private EquipmentService equipmentService;
   private AdminServiceImpl adminService;
 
   @Override
@@ -54,7 +54,7 @@ public class IReservationServiceImpl implements IReservationService {
   @Override
   public ReservationDTO getReservation(String id) throws ReservationNotFoundException {
     Reservation reservation =
-        reservationRepository.findById(id).orElseThrow(ReservationNotFoundException::new);
+        reservationRepository.findById(id).orElseThrow(()->new ReservationNotFoundException("No reservation found"));
     return equipmentMapper.reservationToDTO(reservation);
   }
 
@@ -62,7 +62,7 @@ public class IReservationServiceImpl implements IReservationService {
   public ReservationDTO approveReservation(String id)
       throws ReservationNotFoundException, AppUsersNotFoundException {
     Reservation reservation =
-        reservationRepository.findById(id).orElseThrow(ReservationNotFoundException::new);
+        reservationRepository.findById(id).orElseThrow(()->new ReservationNotFoundException("No reservation found"));
 
     ReservationDTO reservationDTO = equipmentMapper.reservationToDTO(reservation);
 
@@ -93,7 +93,7 @@ public class IReservationServiceImpl implements IReservationService {
   @Override
   public ReservationDTO rejectReservation(String id) throws ReservationNotFoundException {
     Reservation reservation =
-        reservationRepository.findById(id).orElseThrow(ReservationNotFoundException::new);
+        reservationRepository.findById(id).orElseThrow(()->new ReservationNotFoundException("No reservation found"));
     // manage the state to be rejected
     return null;
   }

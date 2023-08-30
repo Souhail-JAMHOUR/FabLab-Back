@@ -1,17 +1,17 @@
 package ma.odc.fablabback.services;
 
 import lombok.AllArgsConstructor;
-import ma.odc.fablabback.Exceptions.EquipmentNotFoundException;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentDTO;
 import ma.odc.fablabback.entities.equipments.Equipment;
-import ma.odc.fablabback.mappers.EquipmentMapperImpl;
+import ma.odc.fablabback.exceptions.EquipmentNotFoundException;
+import ma.odc.fablabback.mappers.EquipmentMapper;
 import ma.odc.fablabback.repositories.equipments.EquipmentRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class IEquipmentServiceImpl implements IEquipmentService {
-  private  EquipmentMapperImpl equipmentMapper;
+public class EquipmentService implements IEquipmentService {
+  private EquipmentMapper equipmentMapper;
   private EquipmentRepository equipmentRepository;
   @Override
   public boolean checkEquipmentAvailabiltiy(Equipment equipment, int requestedQuantity) {
@@ -28,13 +28,13 @@ public class IEquipmentServiceImpl implements IEquipmentService {
 
   @Override
   public EquipmentDTO getEquipment(Long id) throws EquipmentNotFoundException {
-    Equipment equipment = equipmentRepository.findById(id).orElseThrow(EquipmentNotFoundException::new);
+    Equipment equipment = equipmentRepository.findById(id).orElseThrow(()->new EquipmentNotFoundException("No Equipment found"));
     return equipmentMapper.equipmentToDTO(equipment);
   }
 
   @Override
   public void deleteEquipment(Long id) throws EquipmentNotFoundException {
-    Equipment equipment = equipmentRepository.findById(id).orElseThrow(EquipmentNotFoundException::new);
+    Equipment equipment = equipmentRepository.findById(id).orElseThrow(()->new EquipmentNotFoundException("No Equipment found"));
     equipmentRepository.delete(equipment);
 
   }

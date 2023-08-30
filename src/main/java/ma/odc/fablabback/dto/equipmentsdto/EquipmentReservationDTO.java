@@ -7,4 +7,6 @@ public class EquipmentReservationDTO {
     private String Id;
 
     private int requestedQuantity;
+
+    private EquipmentDTO equipmentDTO;
 }

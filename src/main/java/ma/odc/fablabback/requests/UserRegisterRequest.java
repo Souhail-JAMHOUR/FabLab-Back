@@ -20,8 +20,12 @@ public class UserRegisterRequest {
   private String password;
   private String confirmedPassword;
   private String cin;
-  @JsonFormat(pattern="yyyy-MM-dd")
+
+  @JsonFormat(pattern = "yyyy-MM-dd")
   private LocalDate birthDate;
-  @JsonEnumDefaultValue
-  private Sex sex;
+
+  @JsonEnumDefaultValue private Sex sex;
+  private String status;
+
+  private String etablissment;
 }

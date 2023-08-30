@@ -25,18 +25,28 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class AppUser implements UserDetails {
 
-  private String email;
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private long AppUsersId;
+  private long appUsersId;
+
+  @Column(unique = true,nullable = false)
   private String appUsersname;
+
   private String name;
+
   @Enumerated(EnumType.STRING)
   private Role role;
+
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String password;
+
+//  @Column(unique = true,nullable = false)
+  private String email;
+
+//  @Column(unique = true,nullable = false)
   private String cin;
-  @JsonFormat(pattern="yyyy-MM-dd")
+
+  @JsonFormat(pattern = "yyyy-MM-dd")
   private LocalDate birthDate;
 
   @Enumerated(EnumType.STRING)

@@ -19,4 +19,5 @@ public interface IEquipmentMapper {
   ReservationDTO reservationToDTO(Reservation reservation);
 
   Reservation dtoToReservation(ReservationDTO reservationDTO);
+
 }

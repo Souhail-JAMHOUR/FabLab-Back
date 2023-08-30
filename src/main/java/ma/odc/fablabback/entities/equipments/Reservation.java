@@ -1,7 +1,7 @@
 package ma.odc.fablabback.entities.equipments;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,10 +22,10 @@ public class Reservation {
   private String reservationId;
 
   @Temporal(TemporalType.DATE)
-  private Date startDate;
+  private LocalDate startDate;
 
   @Temporal(TemporalType.DATE)
-  private Date endDate;
+  private LocalDate endDate;
 
   @ManyToOne private Member member;
   @ManyToOne private Admin admin;
