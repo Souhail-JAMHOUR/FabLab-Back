@@ -51,9 +51,13 @@ public class EquipmentReservationService implements IEquipmentReservationService
     Equipment equipment = equipmentMapper.dtoToEquipment(equipmentDTO);
     List<EquipmentReservation> equipmentReservationByEquipmentAndDates =
         equipmentReservationRepository
-            .findEquipmentReservationByEquipmentAndReservation_StartDateAndReservation_EndDate(
-                equipment, request.getStartDate(), request.getEndDate());
-//    List<EquipmentReservation> equipmentReservationByReservationEndDate = equipmentReservationRepository.findByReservation_EndDate(request.getEndDate());
+            .findAllByEquipmentAndReservation_EndDateBetweenOrEquipmentAndReservation_EndDateBetween(
+                equipment,
+                request.getStartDate(),
+                request.getEndDate(),
+                equipment,
+                request.getStartDate(),
+                request.getEndDate());
     List<EquipmentReservationDTO> equipmentReservationDTOS = new ArrayList<>();
     for (EquipmentReservation e : equipmentReservationByEquipmentAndDates) {
       equipmentReservationDTOS.add(equipmentMapper.equipmentReservationToDTO(e));

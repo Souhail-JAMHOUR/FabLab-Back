@@ -6,17 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
-@Data@AllArgsConstructor@NoArgsConstructor@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Equipment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-    private String name;
-    private int quantity;
-    @ManyToOne
-    private Category category;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private long id;
 
+  private String name;
+  private int quantity;
+  @ManyToOne private Category category;
 }

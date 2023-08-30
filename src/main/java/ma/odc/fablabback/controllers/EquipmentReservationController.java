@@ -21,13 +21,13 @@ public class EquipmentReservationController {
   @GetMapping("/all")
   public ResponseEntity<List<EquipmentReservationDTO>> getAllEquipmentReservation() {
     List<EquipmentReservationDTO> allEquipmentReservations =
-        equipmentReservationService.getAllEquipmentReservations();
+            equipmentReservationService.getAllEquipmentReservations();
     return ResponseEntity.ok(allEquipmentReservations);
   }
 
   @PostMapping("/of")
   public ResponseEntity<List<EquipmentReservationDTO>> getReservationByEquipment(
-      @RequestBody EquipmentAvailabilityRequest request) throws EquipmentNotFoundException {
+          @RequestBody EquipmentAvailabilityRequest request) throws EquipmentNotFoundException {
 
     EquipmentDTO equipmentDTO = null;
     try {
@@ -36,7 +36,7 @@ public class EquipmentReservationController {
       throw new RuntimeException(e);
     }
     List<EquipmentReservationDTO> equipmentReservationByEquipment =
-        equipmentReservationService.getEquipmentReservationByEquipmentAndDates(request);
+            equipmentReservationService.getEquipmentReservationByEquipmentAndDates(request);
     return ResponseEntity.ok(equipmentReservationByEquipment);
   }
 }
