@@ -7,10 +7,12 @@ import ma.odc.fablabback.dto.equipmentsdto.EquipmentDTO;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentReservationDTO;
 import ma.odc.fablabback.entities.equipments.Equipment;
 import ma.odc.fablabback.entities.equipments.EquipmentReservation;
+import ma.odc.fablabback.entities.equipments.Reservation;
 import ma.odc.fablabback.exceptions.EquipmentNotFoundException;
 import ma.odc.fablabback.mappers.EquipmentMapper;
 import ma.odc.fablabback.repositories.equipments.EquipmentReservationRepository;
 import ma.odc.fablabback.requests.EquipmentAvailabilityRequest;
+import ma.odc.fablabback.requests.EquipmentReservationRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -64,4 +66,29 @@ public class EquipmentReservationService implements IEquipmentReservationService
     }
     return equipmentReservationDTOS;
   }
+
+  public EquipmentReservationDTO createEquipmentReservation(EquipmentReservationRequest equipmentReservationRequest, Reservation reservation){
+
+    try {
+      EquipmentDTO equipmentDto = equipmentService.getEquipment(equipmentReservationRequest.getEquipmentId());
+      Equipment equipment = equipmentMapper.dtoToEquipment(equipmentDto);
+      EquipmentReservation equipmentReservation = EquipmentReservation.builder()
+              .equipment(equipment)
+              .requestedQuantity(equipmentReservationRequest.getRequestedQuantity())
+              .reservation(reservation)
+              .build();
+      EquipmentReservation saved = equipmentReservationRepository.save(equipmentReservation);
+      return equipmentMapper.equipmentReservationToDTO(saved);
+    } catch (EquipmentNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public EquipmentReservationDTO saveEquipmentReservation(EquipmentReservationDTO equipmentReservationDTO){
+    EquipmentReservation saved = equipmentReservationRepository.save(equipmentMapper.dtoToEquipmentReservation(equipmentReservationDTO));
+    return equipmentMapper.equipmentReservationToDTO(saved);
+  }
+
+  
+
 }

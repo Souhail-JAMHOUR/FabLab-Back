@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import ma.odc.fablabback.dto.usersdto.AppUserDTO;
 import ma.odc.fablabback.entities.Users.AppUser;
 import ma.odc.fablabback.entities.Users.Member;
@@ -18,6 +18,7 @@ import ma.odc.fablabback.repositories.Users.MemberRepository;
 import ma.odc.fablabback.requests.AuthenticationRequest;
 import ma.odc.fablabback.requests.AuthenticationResponse;
 import ma.odc.fablabback.requests.UserRegisterRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,15 +31,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-  private UserMapper userMapper;
-  private AppUsersRepository appUsersRepository;
-  private MemberRepository memberRepository;
-  private PasswordEncoder passwordEncoder;
-  private JwtEncoder jwtEncoder;
-  private AuthenticationManager authenticationManager;
-  private UsersMapperImpl usersMapper;
+  private final UserMapper userMapper;
+  private final AppUsersRepository appUsersRepository;
+  private final MemberRepository memberRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtEncoder jwtEncoder;
+  private final AuthenticationManager authenticationManager;
+  private final UsersMapperImpl usersMapper;
+
+  @Value("${spring.application.security.jwt.expiration}")
+  private long expiration;
 
   @Override
   public AppUserDTO addNewMembre(UserRegisterRequest request) throws AppUserExistsException {
@@ -86,15 +90,17 @@ public class UserServiceImpl implements UserService {
             .collect(Collectors.joining(" "));
 
     Instant instant = Instant.now();
+
     JwtClaimsSet jwtClaimsSet =
         JwtClaimsSet.builder()
+            .issuer("FabLab")
             .issuedAt(instant)
-            .expiresAt(instant.plus(10, ChronoUnit.MINUTES))
+            .expiresAt(instant.plus(expiration, ChronoUnit.MINUTES))
             .subject(request.getUsername())
             .claim("scope", scopes)
             .build();
     JwtEncoderParameters jwtEncoderParameters =
-        JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), jwtClaimsSet);
+        JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).type("JWT").build(), jwtClaimsSet);
     String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
     return AuthenticationResponse.builder().accessToken(jwt).build();
   }

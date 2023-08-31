@@ -3,6 +3,7 @@ package ma.odc.fablabback.services;
 import lombok.AllArgsConstructor;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentDTO;
 import ma.odc.fablabback.entities.equipments.Equipment;
+import ma.odc.fablabback.entities.equipments.EquipmentReservation;
 import ma.odc.fablabback.exceptions.EquipmentNotFoundException;
 import ma.odc.fablabback.mappers.EquipmentMapper;
 import ma.odc.fablabback.repositories.equipments.EquipmentRepository;
@@ -14,9 +15,11 @@ public class EquipmentService implements IEquipmentService {
   private EquipmentMapper equipmentMapper;
   private EquipmentRepository equipmentRepository;
   @Override
-  public boolean checkEquipmentAvailabiltiy(Equipment equipment, int requestedQuantity) {
-    int globalQuantity = equipmentRepository.findAll().size();
-    return requestedQuantity > globalQuantity;
+  public boolean checkEquipmentAvailabiltiy(EquipmentReservation equipmentReservation) throws EquipmentNotFoundException {
+    Equipment equipment = equipmentRepository.findById(equipmentReservation.getEquipment().getId()).orElseThrow(() -> new EquipmentNotFoundException("No Equipment found"));
+    int globalQuantity = equipment.getQuantity();
+    int requestedQuantity = equipmentReservation.getRequestedQuantity();
+    return globalQuantity>requestedQuantity;
   }
 
   @Override

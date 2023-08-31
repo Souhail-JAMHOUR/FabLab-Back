@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentDTO;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentReservationDTO;
 import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
+import ma.odc.fablabback.dto.usersdto.AdminDTO;
+import ma.odc.fablabback.dto.usersdto.MemberDTO;
 import ma.odc.fablabback.entities.equipments.Equipment;
 import ma.odc.fablabback.entities.equipments.EquipmentReservation;
 import ma.odc.fablabback.entities.equipments.Reservation;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EquipmentMapper implements IEquipmentMapper {
   private final UsersMapperImpl usersMapper;
+
   @Override
   public EquipmentDTO equipmentToDTO(Equipment equipment) {
     EquipmentDTO equipmentDTO = new EquipmentDTO();
@@ -55,12 +58,12 @@ public class EquipmentMapper implements IEquipmentMapper {
     List<EquipmentReservation> equipmentReservationList = reservation.getEquipmentReservationList();
     List<EquipmentReservationDTO> equipmentReservationDTOS = new ArrayList<>();
     BeanUtils.copyProperties(reservation, reservationDTO);
-    for(EquipmentReservation er : equipmentReservationList){
+    for (EquipmentReservation er : equipmentReservationList) {
       EquipmentReservationDTO equipmentReservationDTO = equipmentReservationToDTO(er);
       equipmentReservationDTOS.add(equipmentReservationDTO);
     }
     reservationDTO.setMember(usersMapper.membreToDTO(reservation.getMember()));
-    if(reservation.getAdmin()!=null){
+    if (reservation.getAdmin() != null) {
       reservationDTO.setAdmin(usersMapper.adminToDTO(reservation.getAdmin()));
     }
     reservationDTO.setEquipmentReservationListDTO(equipmentReservationDTOS);
@@ -70,6 +73,21 @@ public class EquipmentMapper implements IEquipmentMapper {
   @Override
   public Reservation dtoToReservation(ReservationDTO reservationDTO) {
     Reservation reservation = new Reservation();
+    List<EquipmentReservationDTO> equipmentReservationListDTO =
+        reservationDTO.getEquipmentReservationListDTO();
+    List<EquipmentReservation> equipmentReservations = new ArrayList<>();
+    MemberDTO memberDTO = reservationDTO.getMember();
+    if (reservationDTO.getAdmin() != null) {
+      AdminDTO adminDTO = reservationDTO.getAdmin();
+      reservation.setAdmin(usersMapper.dtoToAdmin(adminDTO));
+    }
+
+    reservation.setMember(usersMapper.dtoToMembre(memberDTO));
+
+    for (EquipmentReservationDTO e : equipmentReservationListDTO) {
+      equipmentReservations.add(dtoToEquipmentReservation(e));
+    }
+    reservation.setEquipmentReservationList(equipmentReservations);
     BeanUtils.copyProperties(reservationDTO, reservation);
     return reservation;
   }
