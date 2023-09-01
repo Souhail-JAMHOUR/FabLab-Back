@@ -62,7 +62,6 @@ public class ReservationService implements IReservationService {
 
     for (EquipmentReservationRequest e : reservationRequest.getEquipmentReservationRequests()) {
 
-      // ! this should not save to db
       EquipmentReservationDTO equipmentReservationDto =
           equipmentReservationService.createEquipmentReservation(e, saved1);
 
@@ -71,17 +70,6 @@ public class ReservationService implements IReservationService {
 
       equipmentReservationList.add(equipmentReservation);
 
-      // ! VERIFY IF CAN BE RESERVED
-      //      boolean checkEquipmentAvailabiltiy =
-      // equipmentService.checkEquipmentAvailabiltiy(equipmentReservation);
-      //
-      //      if (checkEquipmentAvailabiltiy){
-      //
-      //      }
-      //      else {
-      //        // ! Find A WAY TO NOTIFY USER THAT THIS EQUIPMENT IS NOT AVAILABLE
-      //        throw new UnsatisfiedRequirementException("Quantity or equipment are unavailable");
-      //      }
     }
     reservation.setEquipmentReservationList(equipmentReservationList);
 
@@ -207,8 +195,6 @@ public class ReservationService implements IReservationService {
   @Override
   public ReservationDTO startReservation(String id)
       throws ReservationNotFoundException,
-          EquipmentNotFoundException,
-          UnsatisfiedRequirementException,
           AppUsersNotFoundException,
           UnAuthorizedReservationAction {
     Reservation reservation =
@@ -216,15 +202,10 @@ public class ReservationService implements IReservationService {
             .findById(id)
             .orElseThrow(() -> new ReservationNotFoundException("No reservation found"));
 
-    ReservationDTO reservationDTO = equipmentMapper.reservationToDTO(reservation);
-
-    if (verifyReservationEquipment(reservationDTO)) {
       reservation.startReservation();
       Reservation savedReservation = setReservationAdmin(reservation);
       return equipmentMapper.reservationToDTO(savedReservation);
-    } else {
-      throw new UnsatisfiedRequirementException("Some equipments are not available");
-    }
+
   }
 
   @Override

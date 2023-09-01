@@ -60,7 +60,7 @@ public class EquipmentService implements IEquipmentService {
     //            equipmentMapper.equipmentToDTO(equipment));
 
     List<EquipmentReservationDTO> equipmentReservationByEquipmentAndDates =
-        equipmentReservationService.getEquipmentReservationByEquipmentAndDates(
+        equipmentReservationService.getEquipmentReservationByEquipmentAndDatesAndState(
             equipmentAvailabilityRequest);
 
     for (EquipmentReservationDTO e : equipmentReservationByEquipmentAndDates) {
