@@ -6,7 +6,7 @@ import ma.odc.fablabback.exceptions.AppUserExistsException;
 import ma.odc.fablabback.requests.AuthenticationRequest;
 import ma.odc.fablabback.requests.AuthenticationResponse;
 import ma.odc.fablabback.requests.UserRegisterRequest;
-import ma.odc.fablabback.services.UserServiceImpl;
+import ma.odc.fablabback.services.impl.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

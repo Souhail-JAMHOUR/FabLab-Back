@@ -1,4 +1,4 @@
-package ma.odc.fablabback.services;
+package ma.odc.fablabback.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,15 +8,20 @@ import ma.odc.fablabback.dto.equipmentsdto.EquipmentReservationDTO;
 import ma.odc.fablabback.entities.equipments.Equipment;
 import ma.odc.fablabback.entities.equipments.EquipmentReservation;
 import ma.odc.fablabback.entities.equipments.Reservation;
+import ma.odc.fablabback.enums.EReservationState;
 import ma.odc.fablabback.exceptions.EquipmentNotFoundException;
+import ma.odc.fablabback.exceptions.UnsatisfiedRequirementException;
 import ma.odc.fablabback.mappers.EquipmentMapper;
 import ma.odc.fablabback.repositories.equipments.EquipmentReservationRepository;
 import ma.odc.fablabback.requests.EquipmentAvailabilityRequest;
 import ma.odc.fablabback.requests.EquipmentReservationRequest;
+import ma.odc.fablabback.services.IEquipmentReservationService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class EquipmentReservationService implements IEquipmentReservationService {
   private EquipmentReservationRepository equipmentReservationRepository;
   private EquipmentMapper equipmentMapper;
@@ -46,11 +51,35 @@ public class EquipmentReservationService implements IEquipmentReservationService
   }
 
   @Override
+  public List<EquipmentReservationDTO> getEquipmentReservationByEquipmentAndDatesAndState(
+          EquipmentAvailabilityRequest request) throws EquipmentNotFoundException {
+    EquipmentDTO equipmentDTO = equipmentService.getEquipment(request.getEquipmentId());
+    Equipment equipment = equipmentMapper.dtoToEquipment(equipmentDTO);
+    List<EquipmentReservation> byStateAndDates = equipmentReservationRepository.findAllByEquipmentAndReservation_ReservationStateAndReservation_EndDateBetweenOrEquipmentAndReservation_ReservationStateAndReservation_EndDateBetween(
+            equipment,
+            EReservationState.IN_PROGRESS,
+            request.getStartDate(),
+            request.getEndDate(),
+            equipment,
+            EReservationState.CONFIRMED,
+            request.getStartDate(),
+            request.getEndDate()
+    );
+    List<EquipmentReservationDTO> equipmentReservationDTOS = new ArrayList<>();
+    for (EquipmentReservation e : byStateAndDates) {
+      equipmentReservationDTOS.add(equipmentMapper.equipmentReservationToDTO(e));
+    }
+    return equipmentReservationDTOS;
+  }
+
+  @Override
   public List<EquipmentReservationDTO> getEquipmentReservationByEquipmentAndDates(
       EquipmentAvailabilityRequest request) throws EquipmentNotFoundException {
 
-    EquipmentDTO equipmentDTO = equipmentService.getEquipment(request.getEquipmenId());
+    EquipmentDTO equipmentDTO = equipmentService.getEquipment(request.getEquipmentId());
     Equipment equipment = equipmentMapper.dtoToEquipment(equipmentDTO);
+
+    // ! withou state
     List<EquipmentReservation> equipmentReservationByEquipmentAndDates =
         equipmentReservationRepository
             .findAllByEquipmentAndReservation_EndDateBetweenOrEquipmentAndReservation_EndDateBetween(
@@ -60,6 +89,12 @@ public class EquipmentReservationService implements IEquipmentReservationService
                 equipment,
                 request.getStartDate(),
                 request.getEndDate());
+
+    // ! WITH STATE
+
+
+
+
     List<EquipmentReservationDTO> equipmentReservationDTOS = new ArrayList<>();
     for (EquipmentReservation e : equipmentReservationByEquipmentAndDates) {
       equipmentReservationDTOS.add(equipmentMapper.equipmentReservationToDTO(e));
@@ -67,28 +102,39 @@ public class EquipmentReservationService implements IEquipmentReservationService
     return equipmentReservationDTOS;
   }
 
-  public EquipmentReservationDTO createEquipmentReservation(EquipmentReservationRequest equipmentReservationRequest, Reservation reservation){
+  @Override
+  public EquipmentReservationDTO createEquipmentReservation(
+      EquipmentReservationRequest equipmentReservationRequest, Reservation reservation)
+      throws EquipmentNotFoundException, UnsatisfiedRequirementException {
 
-    try {
-      EquipmentDTO equipmentDto = equipmentService.getEquipment(equipmentReservationRequest.getEquipmentId());
-      Equipment equipment = equipmentMapper.dtoToEquipment(equipmentDto);
-      EquipmentReservation equipmentReservation = EquipmentReservation.builder()
-              .equipment(equipment)
-              .requestedQuantity(equipmentReservationRequest.getRequestedQuantity())
-              .reservation(reservation)
-              .build();
+    EquipmentDTO equipmentDto =
+        equipmentService.getEquipment(equipmentReservationRequest.getEquipmentId());
+    Equipment equipment = equipmentMapper.dtoToEquipment(equipmentDto);
+    EquipmentReservation equipmentReservation =
+        EquipmentReservation.builder()
+            .equipment(equipment)
+            .requestedQuantity(equipmentReservationRequest.getRequestedQuantity())
+            .reservation(reservation)
+            .build();
+
+    // ! check if the requirements are satisfied
+
+    boolean checkEquipmentAvailabiltiy =
+        equipmentService.checkEquipmentAvailabiltiy(equipmentReservation, reservation);
+    if (checkEquipmentAvailabiltiy) {
       EquipmentReservation saved = equipmentReservationRepository.save(equipmentReservation);
       return equipmentMapper.equipmentReservationToDTO(saved);
-    } catch (EquipmentNotFoundException e) {
-      throw new RuntimeException(e);
+    } else {
+      throw new UnsatisfiedRequirementException("equipment cannot be added");
     }
   }
 
-  public EquipmentReservationDTO saveEquipmentReservation(EquipmentReservationDTO equipmentReservationDTO){
-    EquipmentReservation saved = equipmentReservationRepository.save(equipmentMapper.dtoToEquipmentReservation(equipmentReservationDTO));
+  @Override
+  public EquipmentReservationDTO saveEquipmentReservation(
+      EquipmentReservationDTO equipmentReservationDTO) {
+    EquipmentReservation saved =
+        equipmentReservationRepository.save(
+            equipmentMapper.dtoToEquipmentReservation(equipmentReservationDTO));
     return equipmentMapper.equipmentReservationToDTO(saved);
   }
-
-  
-
 }

@@ -1,4 +1,4 @@
-package ma.odc.fablabback.services;
+package ma.odc.fablabback.services.impl;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -18,6 +18,7 @@ import ma.odc.fablabback.repositories.Users.MemberRepository;
 import ma.odc.fablabback.requests.AuthenticationRequest;
 import ma.odc.fablabback.requests.AuthenticationResponse;
 import ma.odc.fablabback.requests.UserRegisterRequest;
+import ma.odc.fablabback.services.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -8,8 +8,6 @@ import ma.odc.fablabback.entities.Users.Member;
 import ma.odc.fablabback.entities.Users.SuperAdmin;
 import ma.odc.fablabback.entities.equipments.Category;
 import ma.odc.fablabback.entities.equipments.Equipment;
-import ma.odc.fablabback.entities.equipments.EquipmentReservation;
-import ma.odc.fablabback.entities.equipments.Reservation;
 import ma.odc.fablabback.enums.Role;
 import ma.odc.fablabback.enums.Sex;
 import ma.odc.fablabback.repositories.Users.AdminRepository;
@@ -22,6 +20,7 @@ import ma.odc.fablabback.repositories.equipments.ReservationRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
@@ -31,7 +30,7 @@ public class FabLabBackApplication {
     SpringApplication.run(FabLabBackApplication.class, args);
   }
 
-  //  @Bean
+  @Bean
   CommandLineRunner start(
       AdminRepository adminRepository,
       MemberRepository memberRepository,
@@ -106,7 +105,7 @@ public class FabLabBackApplication {
                 Equipment equipment =
                     Equipment.builder()
                         .category(c)
-                        .quantity(new Random().nextInt() * 22)
+                        .quantity(50)
                         .name("Name " + c.getId())
                         .build();
                 equipmentRepository.save(equipment);
@@ -117,60 +116,37 @@ public class FabLabBackApplication {
 
       // List<EquipmentReservation> equipmentReservationsToAttach = new ArrayList<>();
 
-      List<Equipment> equipmentList = equipmentRepository.findAll();
-      equipmentList.forEach(
-          e -> {
-            memberRepository
-                .findAll()
-                .forEach(
-                    member -> {
-                      Reservation reservation =
-                          Reservation.builder()
-                              .startDate(LocalDate.now())
-                              .endDate(LocalDate.now())
-                              .member(member)
-                              .equipmentReservationList(new ArrayList<>())
-                              .build();
-                      reservationRepository.save(reservation);
-
-                      List<EquipmentReservation> equipmentReservations = new ArrayList<>();
-
-                      for (Equipment equipment : equipmentList) {
-                        EquipmentReservation equipmentReservation =
-                            EquipmentReservation.builder()
-                                .requestedQuantity(10)
-                                .equipment(equipment)
-                                .reservation(reservation)
-                                .build();
-                        equipmentReservations.add(equipmentReservation);
-                        equipmentReservationRepository.save(equipmentReservation);
-                      }
-                      reservationRepository.save(reservation);
-
-                      //                      EquipmentReservation equipmentReservation =
-                      //                          EquipmentReservation.builder()
-                      //                              .equipment(e)
-                      //                              .requestedQuantity(12)
-                      //                              .reservation(reservation)
-                      //                              .build();
-                      //
-                      // equipmentReservationRepository.save(equipmentReservation);
-                      //                      reservationRepository.save(reservation);
-                    });
-          });
-
-      reservationRepository
-          .findAll()
-          .forEach(
-              reservation -> {
-                long randomGenerated = random.nextInt(10);
-                Admin admin =
-                    adminRepository
-                        .findById(randomGenerated % 2 == 0 ? randomGenerated + 1 : randomGenerated)
-                        .orElse(null);
-                reservation.setAdmin(admin);
-                reservationRepository.save(reservation);
-              });
+//      List<Equipment> equipmentList = equipmentRepository.findAll();
+//      equipmentList.forEach(
+//          e -> {
+//            memberRepository
+//                .findAll()
+//                .forEach(
+//                    member -> {
+//                      Reservation reservation =
+//                          Reservation.builder()
+//                              .startDate(LocalDate.now())
+//                              .endDate(LocalDate.now())
+//                              .member(member).reservationState(EReservationState.ONHOLD)
+//                              .equipmentReservationList(new ArrayList<>())
+//                              .build();
+//                      reservationRepository.save(reservation);
+//
+//                      List<EquipmentReservation> equipmentReservations = new ArrayList<>();
+//
+//                      for (Equipment equipment : equipmentList) {
+//                        EquipmentReservation equipmentReservation =
+//                            EquipmentReservation.builder()
+//                                .requestedQuantity(10)
+//                                .equipment(equipment)
+//                                .reservation(reservation)
+//                                .build();
+//                        equipmentReservations.add(equipmentReservation);
+//                        equipmentReservationRepository.save(equipmentReservation);
+//                      }
+//                      reservationRepository.save(reservation);
+//                    });
+//          });
     };
   }
 }

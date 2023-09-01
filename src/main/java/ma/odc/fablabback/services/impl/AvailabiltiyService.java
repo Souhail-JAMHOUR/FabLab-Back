@@ -1,4 +1,4 @@
-package ma.odc.fablabback.services;
+package ma.odc.fablabback.services.impl;
 
 import lombok.AllArgsConstructor;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentDTO;

@@ -48,6 +48,7 @@ public class EquipmentMapper implements IEquipmentMapper {
   public EquipmentReservation dtoToEquipmentReservation(
       EquipmentReservationDTO equipmentReservationDTO) {
     EquipmentReservation equipmentReservation = new EquipmentReservation();
+    equipmentReservation.setEquipment(dtoToEquipment(equipmentReservationDTO.getEquipmentDTO()));
     BeanUtils.copyProperties(equipmentReservationDTO, equipmentReservation);
     return equipmentReservation;
   }
@@ -63,6 +64,7 @@ public class EquipmentMapper implements IEquipmentMapper {
       equipmentReservationDTOS.add(equipmentReservationDTO);
     }
     reservationDTO.setMember(usersMapper.membreToDTO(reservation.getMember()));
+    reservationDTO.setReservationState(reservation.getReservationState());
     if (reservation.getAdmin() != null) {
       reservationDTO.setAdmin(usersMapper.adminToDTO(reservation.getAdmin()));
     }
@@ -91,4 +93,7 @@ public class EquipmentMapper implements IEquipmentMapper {
     BeanUtils.copyProperties(reservationDTO, reservation);
     return reservation;
   }
+
+
+
 }

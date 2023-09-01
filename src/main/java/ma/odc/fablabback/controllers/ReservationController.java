@@ -3,12 +3,9 @@ package ma.odc.fablabback.controllers;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
-import ma.odc.fablabback.exceptions.AppUsersNotFoundException;
-import ma.odc.fablabback.exceptions.EquipmentNotFoundException;
-import ma.odc.fablabback.exceptions.ReservationNotFoundException;
-import ma.odc.fablabback.exceptions.UnsatisfiedRequirementException;
+import ma.odc.fablabback.exceptions.*;
 import ma.odc.fablabback.requests.ReservationRequest;
-import ma.odc.fablabback.services.ReservationService;
+import ma.odc.fablabback.services.impl.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +25,7 @@ public class ReservationController {
   @GetMapping("/{id}")
   public ResponseEntity<ReservationDTO> getReservation(@PathVariable String id) {
     try {
-      ReservationDTO reservation = reservationService.getReservation(id);
+      ReservationDTO reservation = reservationService.getReservationDto(id);
       return ResponseEntity.ok(reservation);
     } catch (ReservationNotFoundException e) {
       throw new RuntimeException(e);
@@ -38,44 +35,25 @@ public class ReservationController {
   @PostMapping("/approve/")
   @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> approveReservation(
-      @RequestBody ReservationDTO reservationDto) {
-    try {
-      ReservationDTO reservationDTO = reservationService.approveReservation(reservationDto);
-      return ResponseEntity.ok(reservationDTO);
-    } catch (ReservationNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (AppUsersNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (EquipmentNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (UnsatisfiedRequirementException e) {
-      throw new RuntimeException(e);
-    }
+      @RequestBody ReservationDTO reservationDto) throws UnAuthorizedReservationAction, AppUsersNotFoundException, ReservationNotFoundException, UnsatisfiedRequirementException, EquipmentNotFoundException {
+    ReservationDTO reservationDTO = reservationService.approveReservation(reservationDto);
+    return ResponseEntity.ok(reservationDTO);
   }
 
   @PostMapping("/create")
   @PreAuthorize("hasAuthority('SCOPE_MEMBER')")
-  public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationRequest reservationRequest){
+  public ResponseEntity<ReservationDTO> createReservation(
+      @RequestBody ReservationRequest reservationRequest)
+      throws UnsatisfiedRequirementException, EquipmentNotFoundException {
     ReservationDTO reservationDTO = reservationService.addNewReservation(reservationRequest);
     return ResponseEntity.ok(reservationDTO);
   }
 
-
   @PostMapping("/approve/{id}")
   @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
-  public ResponseEntity<ReservationDTO> approveReservation(@PathVariable String id) {
-    try {
-      ReservationDTO reservationDTO = reservationService.approveReservation(id);
-      return ResponseEntity.ok(reservationDTO);
-    } catch (ReservationNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (AppUsersNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (EquipmentNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (UnsatisfiedRequirementException e) {
-      throw new RuntimeException(e);
-    }
+  public ResponseEntity<ReservationDTO> approveReservation(@PathVariable String id) throws UnAuthorizedReservationAction, AppUsersNotFoundException, ReservationNotFoundException, UnsatisfiedRequirementException, EquipmentNotFoundException {
+    ReservationDTO reservationDTO = reservationService.approveReservation(id);
+    return ResponseEntity.ok(reservationDTO);
   }
 
   @PostMapping("/cancel/{id}")
@@ -86,12 +64,20 @@ public class ReservationController {
     return ResponseEntity.ok(reservationDTO);
   }
 
-
   @PostMapping("/cancel/")
   @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
-  public ResponseEntity<ReservationDTO> cancelReservation(@RequestBody ReservationDTO reservationDTO) {
+  public ResponseEntity<ReservationDTO> cancelReservation(
+      @RequestBody ReservationDTO reservationDTO) {
 
     reservationService.cancelReservation(reservationDTO);
     return ResponseEntity.ok(reservationDTO);
+  }
+
+  @PostMapping("/start/{id}")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
+  public ResponseEntity<ReservationDTO> startReservation(@PathVariable String id) throws UnAuthorizedReservationAction, AppUsersNotFoundException, ReservationNotFoundException, UnsatisfiedRequirementException, EquipmentNotFoundException {
+      ReservationDTO reservationDTO = reservationService.startReservation(id);
+      return ResponseEntity.ok(reservationDTO);
+
   }
 }

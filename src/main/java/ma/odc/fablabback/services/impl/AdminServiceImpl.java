@@ -1,4 +1,4 @@
-package ma.odc.fablabback.services;
+package ma.odc.fablabback.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import ma.odc.fablabback.mappers.UsersMapperImpl;
 import ma.odc.fablabback.repositories.Users.AdminRepository;
 import ma.odc.fablabback.repositories.Users.AppUsersRepository;
 import ma.odc.fablabback.requests.AuthenticationRequest;
+import ma.odc.fablabback.services.IAdminService;
 import org.springframework.stereotype.Service;
 
 @Service

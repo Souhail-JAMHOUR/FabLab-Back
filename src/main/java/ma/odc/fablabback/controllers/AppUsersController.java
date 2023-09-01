@@ -9,10 +9,10 @@ import ma.odc.fablabback.exceptions.AppUsersNotFoundException;
 import ma.odc.fablabback.mappers.UsersMapperImpl;
 import ma.odc.fablabback.repositories.Users.AppUsersRepository;
 import ma.odc.fablabback.requests.AdminRegisterRequest;
-import ma.odc.fablabback.services.AdminServiceImpl;
-import ma.odc.fablabback.services.MemberService;
-import ma.odc.fablabback.services.SuperAdminService;
-import ma.odc.fablabback.services.UserServiceImpl;
+import ma.odc.fablabback.services.impl.AdminServiceImpl;
+import ma.odc.fablabback.services.impl.MemberService;
+import ma.odc.fablabback.services.impl.SuperAdminService;
+import ma.odc.fablabback.services.impl.UserServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

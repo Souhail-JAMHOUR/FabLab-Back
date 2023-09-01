@@ -1,7 +1,7 @@
 package ma.odc.fablabback.controllers;
 
 import lombok.RequiredArgsConstructor;
-import ma.odc.fablabback.services.RedirectService;
+import ma.odc.fablabback.services.impl.RedirectService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -20,12 +20,12 @@ public class RedirectController {
   @GetMapping("")
   public ResponseEntity<String> redirectRequest(
       @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) {
-      String token = jwt.substring(7);
-      String subject = jwtDecoder.decode(token).getSubject();
-      boolean isAdmin = redirectService.isAdmin(subject);
-      if (isAdmin){
-          return ResponseEntity.ok("redirect:/users/all");
-      }
-      return ResponseEntity.ok("redirect:/");
+    String token = jwt.substring(7);
+    String subject = jwtDecoder.decode(token).getSubject();
+    boolean isAdmin = redirectService.isAdmin(subject);
+    if (isAdmin) {
+      return ResponseEntity.ok("redirect:/users/all");
+    }
+    return ResponseEntity.ok("redirect:/");
   }
 }

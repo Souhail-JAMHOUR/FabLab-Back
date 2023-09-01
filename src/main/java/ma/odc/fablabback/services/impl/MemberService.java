@@ -1,4 +1,4 @@
-package ma.odc.fablabback.services;
+package ma.odc.fablabback.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import ma.odc.fablabback.dto.usersdto.MemberDTO;
 import ma.odc.fablabback.entities.Users.Member;
 import ma.odc.fablabback.mappers.UsersMapperImpl;
 import ma.odc.fablabback.repositories.Users.MemberRepository;
+import ma.odc.fablabback.services.IMemebreService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 

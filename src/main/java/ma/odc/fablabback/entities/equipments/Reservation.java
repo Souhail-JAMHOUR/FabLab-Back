@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.Member;
+import ma.odc.fablabback.enums.EReservationState;
+import ma.odc.fablabback.exceptions.UnAuthorizedReservationAction;
 
 @Entity
 @Data
@@ -33,4 +35,28 @@ public class Reservation {
   @OneToMany(mappedBy = "reservation")
   private List<EquipmentReservation> equipmentReservationList;
   
+
+  @Enumerated(value = EnumType.STRING)
+  private EReservationState reservationState = EReservationState.ONHOLD;
+
+  public void confirmReservation() throws UnAuthorizedReservationAction {
+    reservationState.setConfirmed(this);
+  }
+
+  public void cancelReservation() throws UnAuthorizedReservationAction {
+    reservationState.setCanceled(this);
+  }
+
+  public void rejectReservation() throws UnAuthorizedReservationAction {
+    reservationState.setRejected(this);
+  }
+
+
+  public void startReservation() throws UnAuthorizedReservationAction {
+    reservationState.setInProgress(this);
+  }
+
+  public void endReservation() throws UnAuthorizedReservationAction {
+    reservationState.setEnded(this);
+  }
 }
