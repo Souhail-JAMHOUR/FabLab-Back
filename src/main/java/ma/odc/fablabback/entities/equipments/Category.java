@@ -1,14 +1,15 @@
 package ma.odc.fablabback.entities.equipments;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 @Entity
 @Data@NoArgsConstructor@AllArgsConstructor@Builder
 public class Category {
@@ -17,7 +18,7 @@ public class Category {
 
     private String description;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "category")
     private List<Equipment> labeledEquipments;
 
 }

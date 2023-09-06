@@ -18,11 +18,11 @@ public class Admin extends AppUser {
 
   private String poste;
 
-  @OneToMany(mappedBy = "admin")
+  @OneToMany(cascade = CascadeType.ALL,mappedBy = "admin")
   @JsonIgnore
   private List<Reservation> approvedReservations;
 
-  @OneToMany(mappedBy = "approver")
+  @OneToMany(cascade = CascadeType.ALL,mappedBy = "admin")
   @JsonIgnore
   private List<Project> approvedProjects;
 }
