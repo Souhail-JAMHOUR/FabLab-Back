@@ -7,6 +7,7 @@ import ma.odc.fablabback.exceptions.*;
 import ma.odc.fablabback.requests.ReservationRequest;
 import ma.odc.fablabback.services.impl.ReservationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,7 +33,7 @@ public class ReservationController {
   }
 
   @PostMapping("/approve/")
-//  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> approveReservation(
       @RequestBody ReservationDTO reservationDto)
       throws UnAuthorizedReservationAction,
@@ -44,7 +45,7 @@ public class ReservationController {
   }
 
   @PostMapping("/create")
-//  @PreAuthorize("hasAuthority('SCOPE_MEMBER')")
+  @PreAuthorize("hasAuthority('SCOPE_MEMBER')")
   public ResponseEntity<ReservationDTO> createReservation(
       @RequestBody ReservationRequest reservationRequest)
       throws UnsatisfiedRequirementException,
@@ -55,7 +56,7 @@ public class ReservationController {
   }
 
   @PostMapping("/approve/{id}")
-//  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> approveReservation(@PathVariable String id)
       throws UnAuthorizedReservationAction,
           AppUsersNotFoundException,
@@ -67,7 +68,7 @@ public class ReservationController {
   }
 
   @PostMapping("/cancel/{id}")
-//  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> cancelReservation(@PathVariable String id)
       throws UnAuthorizedReservationAction,
           AppUsersNotFoundException,
@@ -78,7 +79,7 @@ public class ReservationController {
   }
 
   @PostMapping("/cancel/")
-//  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> cancelReservation(
       @RequestBody ReservationDTO reservationDTO)
       throws UnAuthorizedReservationAction,
@@ -90,7 +91,7 @@ public class ReservationController {
   }
 
   @PostMapping("/start/{id}")
-//  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> startReservation(@PathVariable String id)
       throws UnAuthorizedReservationAction,
           AppUsersNotFoundException,
@@ -100,7 +101,7 @@ public class ReservationController {
   }
 
   @PostMapping("/end/{id}")
-//  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> endReservation(@PathVariable String id)
       throws UnAuthorizedReservationAction,
           AppUsersNotFoundException,
@@ -110,7 +111,7 @@ public class ReservationController {
   }
 
   @PostMapping("/reject/{id}")
-//  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> rejectReservation(@PathVariable String id)
       throws UnAuthorizedReservationAction,
           AppUsersNotFoundException,
