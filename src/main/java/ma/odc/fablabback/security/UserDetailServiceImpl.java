@@ -17,7 +17,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     AppUser appUser = userService.loadUserbyUsername(username);
-    if (appUser == null) throw new RuntimeException("User does not exists");
+    if (appUser == null) throw new UsernameNotFoundException("User does not exists");
     UserDetails userDetails =
         User.withUsername(appUser.getAppUsersname())
             .password(appUser.getPassword())

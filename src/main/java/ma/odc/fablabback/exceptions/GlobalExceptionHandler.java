@@ -19,6 +19,6 @@ public class GlobalExceptionHandler {
             .message(ex.getMessage())
             .timestamp(new Date())
             .build();
-    return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.BAD_REQUEST);
   }
 }

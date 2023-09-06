@@ -25,4 +25,7 @@ public interface IEquipmentReservationService {
 
   EquipmentReservationDTO saveEquipmentReservation(
           EquipmentReservationDTO equipmentReservationDTO);
+
+    List<EquipmentReservationDTO> getEquipmentAvailabilityForAdmin(
+            EquipmentAvailabilityRequest request) throws EquipmentNotFoundException;
 }

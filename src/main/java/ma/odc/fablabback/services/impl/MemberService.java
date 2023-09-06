@@ -2,12 +2,15 @@ package ma.odc.fablabback.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import ma.odc.fablabback.dto.usersdto.MemberDTO;
 import ma.odc.fablabback.entities.Users.Member;
+import ma.odc.fablabback.exceptions.AppUsersNotFoundException;
 import ma.odc.fablabback.mappers.UsersMapperImpl;
 import ma.odc.fablabback.repositories.Users.MemberRepository;
 import ma.odc.fablabback.services.IMemebreService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,12 @@ import org.springframework.stereotype.Service;
 public class MemberService implements IMemebreService {
   private MemberRepository memberRepository;
   private UsersMapperImpl usersMapper;
+
+  @Override
+  public MemberDTO getConnectedMember() throws AppUsersNotFoundException {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    return getMemberByUsername(username);
+  }
 
   @Override
   public List<MemberDTO> getAllMembers() {
@@ -38,11 +47,11 @@ public class MemberService implements IMemebreService {
   }
 
   @Override
-  public MemberDTO getMemberByUsername(String username) {
+  public MemberDTO getMemberByUsername(String username) throws AppUsersNotFoundException {
     Member member =
         memberRepository
             .findByAppUsersname(username)
-            .orElseThrow(() -> new UsernameNotFoundException("Member Not found"));
+            .orElseThrow(() -> new AppUsersNotFoundException("Member Not found"));
     return usersMapper.membreToDTO(member);
   }
 
@@ -58,5 +67,10 @@ public class MemberService implements IMemebreService {
   public void deleteMember(Long id) {
     Member member = memberRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Member Not found"));
     memberRepository.delete(member);
+  }
+
+  public List<MemberDTO> searchMember(String keyword) {
+    List<MemberDTO> collected = memberRepository.searchMember(keyword).stream().map(usersMapper::membreToDTO).collect(Collectors.toList());
+    return collected;
   }
 }

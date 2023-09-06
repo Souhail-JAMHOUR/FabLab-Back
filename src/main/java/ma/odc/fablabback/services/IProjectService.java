@@ -1,14 +1,51 @@
 package ma.odc.fablabback.services;
 
-import ma.odc.fablabback.dto.Docsdto.DocumentationDTO;
+import java.util.List;
 import ma.odc.fablabback.dto.Docsdto.ProjectDTO;
-import ma.odc.fablabback.dto.usersdto.AdminDTO;
 import ma.odc.fablabback.dto.usersdto.MemberDTO;
+import ma.odc.fablabback.entities.Docs.Project;
+import ma.odc.fablabback.exceptions.AppUsersNotFoundException;
+import ma.odc.fablabback.exceptions.ProjectNotFoundException;
+import ma.odc.fablabback.exceptions.UnAuthorizedProjectAction;
+import ma.odc.fablabback.requests.ProjectRequest;
+import ma.odc.fablabback.requests.ProjectUpdateRequest;
 
 public interface IProjectService {
 
-  ProjectDTO addNewProject(MemberDTO memberDTO, DocumentationDTO documentationDTO);
+  List<ProjectDTO> getMyProjects() throws AppUsersNotFoundException;
 
-  ProjectDTO getProject(Long id);
-  ProjectDTO approveProject(Long id, AdminDTO adminDTO);
+  List<ProjectDTO> getMemberProjects(MemberDTO memberDTO);
+
+  List<ProjectDTO> getPendingProjects();
+
+  List<ProjectDTO> getApprovedProjects();
+
+  List<ProjectDTO> getAllProjects();
+
+  ProjectDTO addNewProject(ProjectRequest request) throws AppUsersNotFoundException;
+
+  ProjectDTO getProject(Long id) throws ProjectNotFoundException;
+
+  ProjectDTO approveProject(Long id)
+      throws ProjectNotFoundException, AppUsersNotFoundException, UnAuthorizedProjectAction;
+
+  ProjectDTO approveProject(ProjectDTO projectDTO)
+      throws UnAuthorizedProjectAction, AppUsersNotFoundException;
+
+  Project setProjectAdmin(Project project) throws AppUsersNotFoundException;
+
+  ProjectDTO updateProject(ProjectUpdateRequest projectUpdateRequest)
+      throws ProjectNotFoundException, AppUsersNotFoundException, UnAuthorizedProjectAction;
+
+  ProjectDTO disableProject(long id)
+      throws ProjectNotFoundException, UnAuthorizedProjectAction, AppUsersNotFoundException;
+
+  ProjectDTO disableProject(ProjectDTO projectDTO)
+      throws UnAuthorizedProjectAction, AppUsersNotFoundException;
+
+  ProjectDTO rejectProject(ProjectDTO projectDTO)
+      throws UnAuthorizedProjectAction, AppUsersNotFoundException;
+
+  ProjectDTO rejectProject(Long id)
+          throws ProjectNotFoundException, UnAuthorizedProjectAction, AppUsersNotFoundException;
 }

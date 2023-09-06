@@ -9,7 +9,7 @@ import ma.odc.fablabback.requests.ReservationRequest;
 public interface IReservationService {
 
   ReservationDTO addNewReservation(ReservationRequest reservationRequest)
-      throws EquipmentNotFoundException, UnsatisfiedRequirementException;
+      throws EquipmentNotFoundException, UnsatisfiedRequirementException, AppUsersNotFoundException;
 
   ReservationDTO getReservationDto(String id) throws ReservationNotFoundException;
 
@@ -39,19 +39,24 @@ public interface IReservationService {
           UnAuthorizedReservationAction;
 
   // ! Reject
-  ReservationDTO rejectReservation(String id) throws ReservationNotFoundException;
+  ReservationDTO rejectReservation(String id)
+      throws ReservationNotFoundException, UnAuthorizedReservationAction, AppUsersNotFoundException;
 
   ReservationDTO rejectReservation(ReservationDTO reservationDTO)
-      throws ReservationNotFoundException;
+      throws ReservationNotFoundException, UnAuthorizedReservationAction, AppUsersNotFoundException;
 
   // ! Cancel
-  ReservationDTO cancelReservation(String id);
+  ReservationDTO cancelReservation(String id)
+      throws ReservationNotFoundException, UnAuthorizedReservationAction, AppUsersNotFoundException;
 
-  ReservationDTO cancelReservation(ReservationDTO reservationDTO);
+  ReservationDTO cancelReservation(ReservationDTO reservationDTO)
+      throws ReservationNotFoundException, UnAuthorizedReservationAction, AppUsersNotFoundException;
   // ! End
-  ReservationDTO endReservation(ReservationDTO reservationDTO);
+  ReservationDTO endReservation(ReservationDTO reservationDTO)
+      throws ReservationNotFoundException, UnAuthorizedReservationAction, AppUsersNotFoundException;
 
-  ReservationDTO endReservation(String id);
+  ReservationDTO endReservation(String id)
+      throws ReservationNotFoundException, UnAuthorizedReservationAction, AppUsersNotFoundException;
 
   // ! Start
 
@@ -62,5 +67,5 @@ public interface IReservationService {
           AppUsersNotFoundException,
           UnAuthorizedReservationAction;
 
-  ReservationDTO startReservation(ReservationDTO reservationDTO);
+  ReservationDTO startReservation(ReservationDTO reservationDTO) throws UnAuthorizedReservationAction, AppUsersNotFoundException, ReservationNotFoundException;
 }

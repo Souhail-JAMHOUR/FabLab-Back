@@ -4,10 +4,8 @@ import lombok.Data;
 
 @Data
 public class EquipmentDTO {
-
-  private long id;
-
+  private long equipmentId;
   private String name;
-
   private int quantity;
+  private CategoryDTO categoryDTO;
 }

@@ -37,9 +37,12 @@ public class ReservationService implements IReservationService {
   private ReservationRepository reservationRepository;
 
   @Override
-  @Transactional(rollbackFor = {EquipmentNotFoundException.class, UnsatisfiedRequirementException.class})
+  @Transactional(
+      rollbackFor = {EquipmentNotFoundException.class, UnsatisfiedRequirementException.class, AppUsersNotFoundException.class})
   public ReservationDTO addNewReservation(ReservationRequest reservationRequest)
-      throws EquipmentNotFoundException, UnsatisfiedRequirementException {
+      throws EquipmentNotFoundException,
+          UnsatisfiedRequirementException,
+          AppUsersNotFoundException {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     MemberDTO memberByUsername = memberService.getMemberByUsername(username);
     Member member = usersMapper.dtoToMembre(memberByUsername);
@@ -58,7 +61,7 @@ public class ReservationService implements IReservationService {
 
     List<EquipmentReservation> equipmentReservationList = new ArrayList<>();
 
-//    List<Equipment> unavailableEquipments = new ArrayList<>();
+    //    List<Equipment> unavailableEquipments = new ArrayList<>();
 
     for (EquipmentReservationRequest e : reservationRequest.getEquipmentReservationRequests()) {
 
@@ -69,7 +72,6 @@ public class ReservationService implements IReservationService {
           equipmentMapper.dtoToEquipmentReservation(equipmentReservationDto);
 
       equipmentReservationList.add(equipmentReservation);
-
     }
     reservation.setEquipmentReservationList(equipmentReservationList);
 
@@ -133,16 +135,28 @@ public class ReservationService implements IReservationService {
   }
 
   @Override
-  public ReservationDTO rejectReservation(String id) throws ReservationNotFoundException {
-    Reservation reservation = getReservation(id);
-    // manage the state to be rejected
-    return null;
+  public ReservationDTO rejectReservation(String id)
+      throws ReservationNotFoundException,
+          UnAuthorizedReservationAction,
+          AppUsersNotFoundException {
+    Reservation reservation =
+        reservationRepository
+            .findById(id)
+            .orElseThrow(() -> new ReservationNotFoundException("No reservation found"));
+
+    reservation.rejectReservation();
+    Reservation savedReservation = setReservationAdmin(reservation);
+    return equipmentMapper.reservationToDTO(savedReservation);
   }
 
   @Override
   public ReservationDTO rejectReservation(ReservationDTO reservationDTO)
-      throws ReservationNotFoundException {
-    return null;
+      throws ReservationNotFoundException,
+          UnAuthorizedReservationAction,
+          AppUsersNotFoundException {
+    Reservation reservation = getReservation(reservationDTO.getReservationId());
+    ReservationDTO startedReservation = rejectReservation(reservation.getReservationId());
+    return startedReservation;
   }
 
   @Override
@@ -173,23 +187,53 @@ public class ReservationService implements IReservationService {
   }
 
   @Override
-  public ReservationDTO cancelReservation(String id) {
-    return null;
+  public ReservationDTO cancelReservation(String id)
+      throws ReservationNotFoundException,
+          UnAuthorizedReservationAction,
+          AppUsersNotFoundException {
+    Reservation reservation =
+        reservationRepository
+            .findById(id)
+            .orElseThrow(() -> new ReservationNotFoundException("No reservation found"));
+
+    reservation.cancelReservation();
+    Reservation savedReservation = setReservationAdmin(reservation);
+    return equipmentMapper.reservationToDTO(savedReservation);
   }
 
   @Override
-  public ReservationDTO cancelReservation(ReservationDTO reservationDTO) {
-    return null;
+  public ReservationDTO cancelReservation(ReservationDTO reservationDTO)
+      throws ReservationNotFoundException,
+          UnAuthorizedReservationAction,
+          AppUsersNotFoundException {
+    Reservation reservation = getReservation(reservationDTO.getReservationId());
+    ReservationDTO startedReservation = cancelReservation(reservation.getReservationId());
+    return startedReservation;
   }
 
   @Override
-  public ReservationDTO endReservation(ReservationDTO reservationDTO) {
-    return null;
+  public ReservationDTO endReservation(ReservationDTO reservationDTO)
+      throws ReservationNotFoundException,
+          UnAuthorizedReservationAction,
+          AppUsersNotFoundException {
+    Reservation reservation = getReservation(reservationDTO.getReservationId());
+    ReservationDTO startedReservation = endReservation(reservation.getReservationId());
+    return startedReservation;
   }
 
   @Override
-  public ReservationDTO endReservation(String id) {
-    return null;
+  public ReservationDTO endReservation(String id)
+      throws ReservationNotFoundException,
+          UnAuthorizedReservationAction,
+          AppUsersNotFoundException {
+    Reservation reservation =
+        reservationRepository
+            .findById(id)
+            .orElseThrow(() -> new ReservationNotFoundException("No reservation found"));
+
+    reservation.endReservation();
+    Reservation savedReservation = setReservationAdmin(reservation);
+    return equipmentMapper.reservationToDTO(savedReservation);
   }
 
   @Override
@@ -202,16 +246,18 @@ public class ReservationService implements IReservationService {
             .findById(id)
             .orElseThrow(() -> new ReservationNotFoundException("No reservation found"));
 
-      reservation.startReservation();
-      Reservation savedReservation = setReservationAdmin(reservation);
-      return equipmentMapper.reservationToDTO(savedReservation);
-
+    reservation.startReservation();
+    Reservation savedReservation = setReservationAdmin(reservation);
+    return equipmentMapper.reservationToDTO(savedReservation);
   }
 
   @Override
-  public ReservationDTO startReservation(ReservationDTO reservationDTO) {
-    Reservation reservation = equipmentMapper.dtoToReservation(reservationDTO);
-
-    return null;
+  public ReservationDTO startReservation(ReservationDTO reservationDTO)
+      throws ReservationNotFoundException,
+          UnAuthorizedReservationAction,
+          AppUsersNotFoundException {
+    Reservation reservation = getReservation(reservationDTO.getReservationId());
+    ReservationDTO startedReservation = startReservation(reservation.getReservationId());
+    return startedReservation;
   }
 }

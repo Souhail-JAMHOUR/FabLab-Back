@@ -1,6 +1,5 @@
 package ma.odc.fablabback.security;
 
-
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,11 +39,10 @@ public class AppConfiguration {
     http.authorizeHttpRequests(
         (authorize) ->
             authorize
-//                .requestMatchers("/v1/auth/**","/swagger-ui/**","/v3/api-docs/**")
-//                .permitAll()
-                .anyRequest()
+                .requestMatchers("/swagger-ui/**", "/v1/auth/**", "/v3/api-docs/**")
                 .permitAll()
-    );
+                .anyRequest()
+                .permitAll());
 
     return http.build();
   }

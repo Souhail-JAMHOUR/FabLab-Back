@@ -2,6 +2,7 @@ package ma.odc.fablabback.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import ma.odc.fablabback.dto.usersdto.AdminDTO;
 import ma.odc.fablabback.entities.Users.Admin;
@@ -36,7 +37,7 @@ public class AdminServiceImpl implements IAdminService {
   public List<AdminDTO> getAllAdmins() {
     List<Admin> all = adminRepository.findAll();
     List<AdminDTO> adminDTOS = new ArrayList<>();
-    for(Admin a : all){
+    for (Admin a : all) {
       adminDTOS.add(usersMapper.adminToDTO(a));
     }
     return adminDTOS;
@@ -46,8 +47,16 @@ public class AdminServiceImpl implements IAdminService {
     Admin admin =
         adminRepository
             .findByAppUsersname(username)
-            .orElseThrow(() -> new AppUsersNotFoundException("No user with this username"));
+            .orElseThrow(() -> new AppUsersNotFoundException("No Admin with this username"));
     AdminDTO adminDTO = usersMapper.adminToDTO(admin);
     return adminDTO;
+  }
+
+  public List<AdminDTO> searchAdmin(String keyword) {
+    List<AdminDTO> collected =
+        adminRepository.searchAdmins(keyword).stream()
+            .map(usersMapper::adminToDTO)
+            .collect(Collectors.toList());
+    return collected;
   }
 }

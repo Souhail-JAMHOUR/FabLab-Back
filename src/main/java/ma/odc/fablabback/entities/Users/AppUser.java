@@ -29,7 +29,7 @@ public class AppUser implements UserDetails {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long appUsersId;
 
-  @Column(unique = true,nullable = false)
+  @Column(unique = true, nullable = false)
   private String appUsersname;
 
   private String name;
@@ -40,10 +40,13 @@ public class AppUser implements UserDetails {
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String password;
 
-//  @Column(unique = true,nullable = false)
+  //  @Column(unique = true,nullable = false)
   private String email;
 
-//  @Column(unique = true,nullable = false)
+  @Column(name = "image_url")
+  private String imageUrl;
+
+  //  @Column(unique = true,nullable = false)
   private String cin;
 
   @JsonFormat(pattern = "yyyy-MM-dd")

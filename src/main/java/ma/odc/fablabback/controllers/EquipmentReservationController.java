@@ -26,8 +26,10 @@ public class EquipmentReservationController {
 
   @PostMapping("/of")
   public ResponseEntity<List<EquipmentReservationDTO>> getReservationByEquipment(
+      //      @RequestParam(name = "page", defaultValue = "0") int page,
+      //      @RequestParam(name = "size", defaultValue = "5") int size,
       @RequestBody EquipmentAvailabilityRequest request) throws EquipmentNotFoundException {
-      equipmentService.getEquipment(request.getEquipmentId());
+    equipmentService.getEquipment(request.getEquipmentId());
     List<EquipmentReservationDTO> equipmentReservationByEquipment =
         equipmentReservationService.getEquipmentReservationByEquipmentAndDatesAndState(request);
     return ResponseEntity.ok(equipmentReservationByEquipment);

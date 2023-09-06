@@ -16,4 +16,6 @@ public interface UserService {
   AuthenticationResponse authenticate(AuthenticationRequest request);
 
   List<AppUserDTO> getAllUsers();
+
+  List<AppUserDTO> searchUser(String keyword);
 }

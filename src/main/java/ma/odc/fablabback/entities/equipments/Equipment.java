@@ -15,8 +15,11 @@ public class Equipment {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
-
   private String name;
+
+  @Column(name = "image_url")
+  private String imageUrl;
+  
   private int quantity;
   @ManyToOne private Category category;
 }

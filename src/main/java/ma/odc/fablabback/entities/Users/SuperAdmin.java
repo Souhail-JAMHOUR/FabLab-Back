@@ -10,9 +10,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "SUPER_ADMINS")
 public class SuperAdmin extends Admin {
 
-  private String superAdminSpecific;
 }

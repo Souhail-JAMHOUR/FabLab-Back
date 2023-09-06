@@ -2,6 +2,7 @@ package ma.odc.fablabback.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentDTO;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentReservationDTO;
@@ -52,24 +53,24 @@ public class EquipmentReservationService implements IEquipmentReservationService
 
   @Override
   public List<EquipmentReservationDTO> getEquipmentReservationByEquipmentAndDatesAndState(
-          EquipmentAvailabilityRequest request) throws EquipmentNotFoundException {
+      EquipmentAvailabilityRequest request) throws EquipmentNotFoundException {
     EquipmentDTO equipmentDTO = equipmentService.getEquipment(request.getEquipmentId());
     Equipment equipment = equipmentMapper.dtoToEquipment(equipmentDTO);
-    List<EquipmentReservation> byStateAndDates = equipmentReservationRepository.findAllByEquipmentAndReservation_ReservationStateAndReservation_EndDateBetweenOrEquipmentAndReservation_ReservationStateAndReservation_EndDateBetween(
-            equipment,
-            EReservationState.IN_PROGRESS,
-            request.getStartDate(),
-            request.getEndDate(),
-            equipment,
-            EReservationState.CONFIRMED,
-            request.getStartDate(),
-            request.getEndDate()
-    );
-    List<EquipmentReservationDTO> equipmentReservationDTOS = new ArrayList<>();
-    for (EquipmentReservation e : byStateAndDates) {
-      equipmentReservationDTOS.add(equipmentMapper.equipmentReservationToDTO(e));
-    }
-    return equipmentReservationDTOS;
+    List<EquipmentReservationDTO> collected =
+        equipmentReservationRepository
+            .findAllByEquipmentAndReservation_ReservationStateInAndReservation_StartDateBetweenOrEquipmentAndReservation_ReservationStateInAndReservation_EndDateBetween(
+                equipment,
+                List.of(EReservationState.IN_PROGRESS, EReservationState.CONFIRMED),
+                request.getStartDate(),
+                request.getEndDate(),
+                equipment,
+                List.of(EReservationState.IN_PROGRESS, EReservationState.CONFIRMED),
+                request.getStartDate(),
+                request.getEndDate())
+            .stream()
+            .map(equipmentMapper::equipmentReservationToDTO)
+            .collect(Collectors.toList());
+    return collected;
   }
 
   @Override
@@ -79,7 +80,7 @@ public class EquipmentReservationService implements IEquipmentReservationService
     EquipmentDTO equipmentDTO = equipmentService.getEquipment(request.getEquipmentId());
     Equipment equipment = equipmentMapper.dtoToEquipment(equipmentDTO);
 
-    // ! withou state
+    // ! without state
     List<EquipmentReservation> equipmentReservationByEquipmentAndDates =
         equipmentReservationRepository
             .findAllByEquipmentAndReservation_EndDateBetweenOrEquipmentAndReservation_EndDateBetween(
@@ -91,9 +92,6 @@ public class EquipmentReservationService implements IEquipmentReservationService
                 request.getEndDate());
 
     // ! WITH STATE
-
-
-
 
     List<EquipmentReservationDTO> equipmentReservationDTOS = new ArrayList<>();
     for (EquipmentReservation e : equipmentReservationByEquipmentAndDates) {
@@ -136,5 +134,20 @@ public class EquipmentReservationService implements IEquipmentReservationService
         equipmentReservationRepository.save(
             equipmentMapper.dtoToEquipmentReservation(equipmentReservationDTO));
     return equipmentMapper.equipmentReservationToDTO(saved);
+  }
+
+  @Override
+  public List<EquipmentReservationDTO> getEquipmentAvailabilityForAdmin(
+          EquipmentAvailabilityRequest request) throws EquipmentNotFoundException {
+    EquipmentDTO equipment = equipmentService.getEquipment(request.getEquipmentId());
+    List<EquipmentReservationDTO> collected = equipmentReservationRepository
+            .findAllByEquipmentAndReservation_ReservationStateInAndReservation_StartDateLessThanEqualAndReservation_EndDateGreaterThanEqual(
+                    equipmentMapper.dtoToEquipment(equipment),
+                    List.of(
+                            EReservationState.IN_PROGRESS,
+                            EReservationState.CONFIRMED),
+                    request.getStartDate(),
+                    request.getEndDate().minusDays(1)).stream().map(equipmentMapper::equipmentReservationToDTO).collect(Collectors.toList());
+    return collected;
   }
 }

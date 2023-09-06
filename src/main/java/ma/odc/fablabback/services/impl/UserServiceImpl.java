@@ -78,33 +78,33 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public AuthenticationResponse authenticate(AuthenticationRequest request) {
-    Authentication authentication =
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+      Authentication authentication =
+          authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-    //    ! System.out.println("****************AUTH**************************");
+      //    ! System.out.println("****************AUTH**************************");
 
-    String scopes =
-        authentication.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.joining(" "));
+      String scopes =
+          authentication.getAuthorities().stream()
+              .map(GrantedAuthority::getAuthority)
+              .collect(Collectors.joining(" "));
 
-    Instant instant = Instant.now();
+      Instant instant = Instant.now();
 
-    JwtClaimsSet jwtClaimsSet =
-        JwtClaimsSet.builder()
-            .issuer("FabLab")
-            .issuedAt(instant)
-            .expiresAt(instant.plus(expiration, ChronoUnit.MINUTES))
-            .subject(request.getUsername())
-            .claim("scope", scopes)
-            .build();
-    JwtEncoderParameters jwtEncoderParameters =
-        JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).type("JWT").build(), jwtClaimsSet);
-    String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
-    return AuthenticationResponse.builder().accessToken(jwt).build();
-  }
+      JwtClaimsSet jwtClaimsSet =
+          JwtClaimsSet.builder()
+              .issuer("FabLab")
+              .issuedAt(instant)
+              .expiresAt(instant.plus(expiration, ChronoUnit.MINUTES))
+              .subject(request.getUsername())
+              .claim("scope", scopes)
+              .build();
+      JwtEncoderParameters jwtEncoderParameters =
+          JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).type("Jwt").build(), jwtClaimsSet);
+      String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
+      return AuthenticationResponse.builder().accessToken(jwt).build();
+    }
 
   @Override
   public List<AppUserDTO> getAllUsers() {
@@ -117,4 +117,10 @@ public class UserServiceImpl implements UserService {
     }
     return dtos;
   }
+
+  @Override
+    public List<AppUserDTO> searchUser(String keyword) {
+      List<AppUserDTO> collected = appUsersRepository.searchUser(keyword).stream().map(userMapper::appUserToDTO).collect(Collectors.toList());
+      return collected;
+    }
 }
