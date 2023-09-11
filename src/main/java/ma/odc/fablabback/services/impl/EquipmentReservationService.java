@@ -138,16 +138,24 @@ public class EquipmentReservationService implements IEquipmentReservationService
 
   @Override
   public List<EquipmentReservationDTO> getEquipmentAvailabilityForAdmin(
-          EquipmentAvailabilityRequest request) throws EquipmentNotFoundException {
+      EquipmentAvailabilityRequest request) throws EquipmentNotFoundException {
     EquipmentDTO equipment = equipmentService.getEquipment(request.getEquipmentId());
-    List<EquipmentReservationDTO> collected = equipmentReservationRepository
+    List<EquipmentReservationDTO> collected =
+        equipmentReservationRepository
             .findAllByEquipmentAndReservation_ReservationStateInAndReservation_StartDateLessThanEqualAndReservation_EndDateGreaterThanEqual(
-                    equipmentMapper.dtoToEquipment(equipment),
-                    List.of(
-                            EReservationState.IN_PROGRESS,
-                            EReservationState.CONFIRMED),
-                    request.getStartDate(),
-                    request.getEndDate().minusDays(1)).stream().map(equipmentMapper::equipmentReservationToDTO).collect(Collectors.toList());
+                equipmentMapper.dtoToEquipment(equipment),
+                List.of(EReservationState.IN_PROGRESS, EReservationState.CONFIRMED),
+                request.getStartDate(),
+                request.getEndDate().minusDays(1))
+            .stream()
+            .map(equipmentMapper::equipmentReservationToDTO)
+            .collect(Collectors.toList());
     return collected;
+  }
+
+  public EquipmentReservationDTO getEquipmentReservation(String equipmentReservationId) {
+    EquipmentReservation equipmentReservation =
+        equipmentReservationRepository.findById(equipmentReservationId).orElse(null);
+    return equipmentMapper.equipmentReservationToDTO(equipmentReservation);
   }
 }

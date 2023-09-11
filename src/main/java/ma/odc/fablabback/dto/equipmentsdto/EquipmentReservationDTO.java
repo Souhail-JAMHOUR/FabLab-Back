@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class EquipmentReservationDTO {
-    private String Id;
+  private String Id;
 
-    private int requestedQuantity;
+  private int requestedQuantity;
 
-    private EquipmentDTO equipmentDTO;
+  private EquipmentDTO equipmentDTO;
 }

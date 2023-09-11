@@ -3,8 +3,10 @@ package ma.odc.fablabback.controllers;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
+import ma.odc.fablabback.dto.usersdto.MemberDTO;
 import ma.odc.fablabback.exceptions.*;
 import ma.odc.fablabback.requests.ReservationRequest;
+import ma.odc.fablabback.services.impl.MemberService;
 import ma.odc.fablabback.services.impl.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +17,21 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ReservationController {
   private final ReservationService reservationService;
+  private final MemberService memberService;
 
   @GetMapping("/all")
+  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<List<ReservationDTO>> getAllReservation() {
     List<ReservationDTO> allReservations = reservationService.getAllReservations();
+    return ResponseEntity.ok(allReservations);
+  }
+
+  @GetMapping("/myreservation")
+  @PreAuthorize("hasAuthority('SCOPE_MEMBER')")
+  public ResponseEntity<List<ReservationDTO>> getMyReservation() throws AppUsersNotFoundException {
+    MemberDTO connectedMember = memberService.getConnectedMember();
+    List<ReservationDTO> allReservations =
+        reservationService.getMemberReservations(connectedMember);
     return ResponseEntity.ok(allReservations);
   }
 

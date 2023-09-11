@@ -1,7 +1,6 @@
 package ma.odc.fablabback;
 
 import java.time.LocalDate;
-import java.util.*;
 import java.util.stream.Stream;
 import ma.odc.fablabback.entities.Users.Admin;
 import ma.odc.fablabback.entities.Users.Member;
@@ -15,7 +14,6 @@ import ma.odc.fablabback.repositories.Users.AppUsersRepository;
 import ma.odc.fablabback.repositories.Users.MemberRepository;
 import ma.odc.fablabback.repositories.equipments.CategoryRepository;
 import ma.odc.fablabback.repositories.equipments.EquipmentRepository;
-import ma.odc.fablabback.services.impl.UserServiceImpl;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,7 +32,6 @@ public class FabLabBackApplication {
       MemberRepository memberRepository,
       CategoryRepository categoryRepository,
       EquipmentRepository equipmentRepository,
-      UserServiceImpl userService,
       AppUsersRepository appUsersRepository,
       PasswordEncoder passwordEncoder) {
     return (args) -> {
@@ -104,43 +101,7 @@ public class FabLabBackApplication {
                         .build();
                 equipmentRepository.save(equipment);
               });
-
-      //  create Equipment reservations
-      // find a way to validate the reservation in the script
-
-      // List<EquipmentReservation> equipmentReservationsToAttach = new ArrayList<>();
-
-//      List<Equipment> equipmentList = equipmentRepository.findAll();
-//      equipmentList.forEach(
-//          e -> {
-//            memberRepository
-//                .findAll()
-//                .forEach(
-//                    member -> {
-//                      Reservation reservation =
-//                          Reservation.builder()
-//                              .startDate(LocalDate.now())
-//                              .endDate(LocalDate.now())
-//                              .member(member).reservationState(EReservationState.ONHOLD)
-//                              .equipmentReservationList(new ArrayList<>())
-//                              .build();
-//                      reservationRepository.save(reservation);
-//
-//                      List<EquipmentReservation> equipmentReservations = new ArrayList<>();
-//
-//                      for (Equipment equipment : equipmentList) {
-//                        EquipmentReservation equipmentReservation =
-//                            EquipmentReservation.builder()
-//                                .requestedQuantity(10)
-//                                .equipment(equipment)
-//                                .reservation(reservation)
-//                                .build();
-//                        equipmentReservations.add(equipmentReservation);
-//                        equipmentReservationRepository.save(equipmentReservation);
-//                      }
-//                      reservationRepository.save(reservation);
-//                    });
-//          });
+      
     };
   }
 }

@@ -2,6 +2,7 @@ package ma.odc.fablabback.entities.equipments;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,15 +15,20 @@ import lombok.NoArgsConstructor;
 @Builder
 public class EquipmentReservation implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String Id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String Id;
 
-    private int requestedQuantity;
-    @ManyToOne
-    @JoinColumn(name = "EQUIPMENT_ID")
-    private Equipment equipment;
-    @ManyToOne
-    @JoinColumn(name = "RESERVATION_ID")
-    private Reservation reservation;
+  private int requestedQuantity;
+
+  @ManyToOne
+  @JoinColumn(name = "EQUIPMENT_ID")
+  private Equipment equipment;
+
+  @ManyToOne
+  @JoinColumn(name = "RESERVATION_ID")
+  private Reservation reservation;
+
+  //  @OneToMany(mappedBy = "equipmentReservation")
+  //  private List<EquipmentIssue> issueList;
 }

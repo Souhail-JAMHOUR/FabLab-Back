@@ -31,9 +31,10 @@ public class EquipmentService implements IEquipmentService {
   private CategoryService categoryService;
 
   public EquipmentService(
-          EquipmentMapper equipmentMapper,
-          EquipmentRepository equipmentRepository,
-          @Lazy EquipmentReservationService equipmentReservationService, CategoryService categoryService) {
+      EquipmentMapper equipmentMapper,
+      EquipmentRepository equipmentRepository,
+      @Lazy EquipmentReservationService equipmentReservationService,
+      CategoryService categoryService) {
     this.equipmentMapper = equipmentMapper;
     this.equipmentRepository = equipmentRepository;
     this.equipmentReservationService = equipmentReservationService;
@@ -79,7 +80,8 @@ public class EquipmentService implements IEquipmentService {
   }
 
   @Override
-  public EquipmentDTO addNewEquipment(NewEquipmentRequest newEquipment) throws CatergoryNotFoundException {
+  public EquipmentDTO addNewEquipment(NewEquipmentRequest newEquipment)
+      throws CatergoryNotFoundException {
     CategoryDTO categoryByName = categoryService.getCategoryByName(newEquipment.getCategory());
     Equipment equipment =
         Equipment.builder()
@@ -134,7 +136,6 @@ public class EquipmentService implements IEquipmentService {
     request.setEquipmentId(equipmentId);
     request.setStartDate(LocalDate.now());
 
-
     EquipmentDTO equipment = getEquipment(equipmentId);
 
     EquipmentAvailabilityResponse response = new EquipmentAvailabilityResponse();
@@ -164,8 +165,25 @@ public class EquipmentService implements IEquipmentService {
   }
 
   @Override
-  public List<EquipmentDTO> searchEquipment(String kw){
-    List<EquipmentDTO> collected = equipmentRepository.searchEquipment(kw).stream().map(equipmentMapper::equipmentToDTO).collect(Collectors.toList());
+  public List<EquipmentDTO> searchEquipment(String kw) {
+    List<EquipmentDTO> collected =
+        equipmentRepository.searchEquipment(kw).stream()
+            .map(equipmentMapper::equipmentToDTO)
+            .collect(Collectors.toList());
     return collected;
+  }
+
+  public void decreaseQuantityByOne(Equipment equipment) throws EquipmentNotFoundException {
+    EquipmentDTO equipment1 = getEquipment(equipment.getId());
+    Equipment retrievedEquipment = equipmentMapper.dtoToEquipment(equipment1);
+    retrievedEquipment.setQuantity(retrievedEquipment.getQuantity() - 1);
+    equipmentRepository.save(retrievedEquipment);
+  }
+
+  public void increaseQuantityByOne(Equipment equipment) throws EquipmentNotFoundException {
+    EquipmentDTO equipment1 = getEquipment(equipment.getId());
+    Equipment retrievedEquipment = equipmentMapper.dtoToEquipment(equipment1);
+    retrievedEquipment.setQuantity(retrievedEquipment.getQuantity() + 1);
+    equipmentRepository.save(retrievedEquipment);
   }
 }

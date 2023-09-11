@@ -2,6 +2,7 @@ package ma.odc.fablabback.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import ma.odc.fablabback.dto.equipmentsdto.EquipmentReservationDTO;
 import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
@@ -38,7 +39,11 @@ public class ReservationService implements IReservationService {
 
   @Override
   @Transactional(
-      rollbackFor = {EquipmentNotFoundException.class, UnsatisfiedRequirementException.class, AppUsersNotFoundException.class})
+      rollbackFor = {
+        EquipmentNotFoundException.class,
+        UnsatisfiedRequirementException.class,
+        AppUsersNotFoundException.class
+      })
   public ReservationDTO addNewReservation(ReservationRequest reservationRequest)
       throws EquipmentNotFoundException,
           UnsatisfiedRequirementException,
@@ -76,6 +81,15 @@ public class ReservationService implements IReservationService {
     reservation.setEquipmentReservationList(equipmentReservationList);
 
     return equipmentMapper.reservationToDTO(reservationRepository.save(reservation));
+  }
+
+  @Override
+  public List<ReservationDTO> getMemberReservations(MemberDTO memberDTO) {
+    List<ReservationDTO> collected =
+        reservationRepository.findAllByMember(usersMapper.dtoToMembre(memberDTO)).stream()
+            .map(equipmentMapper::reservationToDTO)
+            .collect(Collectors.toList());
+    return collected;
   }
 
   @Override

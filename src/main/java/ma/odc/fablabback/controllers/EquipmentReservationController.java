@@ -34,4 +34,12 @@ public class EquipmentReservationController {
         equipmentReservationService.getEquipmentReservationByEquipmentAndDatesAndState(request);
     return ResponseEntity.ok(equipmentReservationByEquipment);
   }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<EquipmentReservationDTO> getEquipmentReservation(@PathVariable String id) {
+    EquipmentReservationDTO equipmentReservation =
+        equipmentReservationService.getEquipmentReservation(id);
+
+    return ResponseEntity.ok(equipmentReservation);
+  }
 }
