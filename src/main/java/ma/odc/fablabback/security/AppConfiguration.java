@@ -43,7 +43,6 @@ public class AppConfiguration {
                 .permitAll()
                 .anyRequest()
                 .permitAll());
-
     return http.build();
   }
 

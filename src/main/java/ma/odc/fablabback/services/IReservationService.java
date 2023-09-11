@@ -2,6 +2,7 @@ package ma.odc.fablabback.services;
 
 import java.util.List;
 import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
+import ma.odc.fablabback.dto.usersdto.MemberDTO;
 import ma.odc.fablabback.entities.equipments.Reservation;
 import ma.odc.fablabback.exceptions.*;
 import ma.odc.fablabback.requests.ReservationRequest;
@@ -10,6 +11,8 @@ public interface IReservationService {
 
   ReservationDTO addNewReservation(ReservationRequest reservationRequest)
       throws EquipmentNotFoundException, UnsatisfiedRequirementException, AppUsersNotFoundException;
+
+  List<ReservationDTO> getMemberReservations(MemberDTO memberDTO);
 
   ReservationDTO getReservationDto(String id) throws ReservationNotFoundException;
 

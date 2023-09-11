@@ -9,12 +9,13 @@ import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
+  // need to make a unique exception handler for every class
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorObject> handleUnsatisfiedRequirement(
       Exception ex, WebRequest request) {
 
-    ErrorObject errorObject = ErrorObject.builder()
+    ErrorObject errorObject =
+        ErrorObject.builder()
             .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
             .message(ex.getMessage())
             .timestamp(new Date())

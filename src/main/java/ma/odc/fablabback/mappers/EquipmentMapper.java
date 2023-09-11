@@ -2,28 +2,29 @@ package ma.odc.fablabback.mappers;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import ma.odc.fablabback.dto.Docsdto.DocumentationDTO;
 import ma.odc.fablabback.dto.Docsdto.ProjectDTO;
-import ma.odc.fablabback.dto.equipmentsdto.CategoryDTO;
-import ma.odc.fablabback.dto.equipmentsdto.EquipmentDTO;
-import ma.odc.fablabback.dto.equipmentsdto.EquipmentReservationDTO;
-import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
+import ma.odc.fablabback.dto.equipmentsdto.*;
 import ma.odc.fablabback.dto.usersdto.AdminDTO;
 import ma.odc.fablabback.dto.usersdto.MemberDTO;
 import ma.odc.fablabback.entities.Docs.Documentation;
 import ma.odc.fablabback.entities.Docs.Project;
-import ma.odc.fablabback.entities.equipments.Category;
-import ma.odc.fablabback.entities.equipments.Equipment;
-import ma.odc.fablabback.entities.equipments.EquipmentReservation;
-import ma.odc.fablabback.entities.equipments.Reservation;
+import ma.odc.fablabback.entities.equipments.*;
+import ma.odc.fablabback.services.impl.EquipmentReservationService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class EquipmentMapper implements IEquipmentMapper {
+  private final EquipmentReservationService equipmentReservationService;
   private final UsersMapperImpl usersMapper;
+
+  public EquipmentMapper(
+      @Lazy EquipmentReservationService equipmentReservationService, UsersMapperImpl usersMapper) {
+    this.equipmentReservationService = equipmentReservationService;
+    this.usersMapper = usersMapper;
+  }
 
   @Override
   public EquipmentDTO equipmentToDTO(Equipment equipment) {
@@ -51,9 +52,24 @@ public class EquipmentMapper implements IEquipmentMapper {
     EquipmentReservationDTO equipmentReservationDTO = new EquipmentReservationDTO();
     BeanUtils.copyProperties(equipmentReservation, equipmentReservationDTO);
     Equipment equipment = equipmentReservation.getEquipment();
+    //    List<EquipmentIssueDTO> equipmentIssueDTOS =
+    //        equipmentReservation.getIssueList().stream()
+    //            .map(issue -> equipmentIssueToDTO(issue))
+    //            .collect(Collectors.toList());
     EquipmentDTO equipmentDTO = equipmentToDTO(equipment);
     equipmentReservationDTO.setEquipmentDTO(equipmentDTO);
     return equipmentReservationDTO;
+  }
+
+  public EquipmentIssueDTO equipmentIssueToDTO(EquipmentIssue issue) {
+    EquipmentIssueDTO equipmentIssueDTO = new EquipmentIssueDTO();
+    equipmentIssueDTO.setDescription(issue.getDescription());
+    equipmentIssueDTO.setIssueId(issue.getIssueId());
+    equipmentIssueDTO.setReportedAt(issue.getReportedAt());
+    equipmentIssueDTO.setEquipmentIssueState(issue.getEquipmentIssueState());
+    equipmentIssueDTO.setEquipmentReservationDTO(
+        equipmentReservationToDTO(issue.getEquipmentReservation()));
+    return equipmentIssueDTO;
   }
 
   @Override
@@ -63,6 +79,16 @@ public class EquipmentMapper implements IEquipmentMapper {
     equipmentReservation.setEquipment(dtoToEquipment(equipmentReservationDTO.getEquipmentDTO()));
     BeanUtils.copyProperties(equipmentReservationDTO, equipmentReservation);
     return equipmentReservation;
+  }
+
+  public EquipmentIssue dtoToEquipmentIssue(EquipmentIssueDTO issueDto) {
+    EquipmentIssue issue = new EquipmentIssue();
+    issue.setDescription(issueDto.getDescription());
+    issue.setReportedAt(issueDto.getReportedAt());
+    issue.setIssueId(issueDto.getIssueId());
+    issue.setEquipmentIssueState(issueDto.getEquipmentIssueState());
+    issue.setEquipmentReservation(dtoToEquipmentReservation(issueDto.getEquipmentReservationDTO()));
+    return issue;
   }
 
   @Override
@@ -151,20 +177,15 @@ public class EquipmentMapper implements IEquipmentMapper {
     return documentationDTO;
   }
 
-  public CategoryDTO categoryToDto(Category category){
+  public CategoryDTO categoryToDto(Category category) {
     CategoryDTO categoryDTO = new CategoryDTO();
-    BeanUtils.copyProperties(category,categoryDTO);
+    BeanUtils.copyProperties(category, categoryDTO);
     return categoryDTO;
   }
 
-
-  public Category dtoToCategory(CategoryDTO categoryDTO){
+  public Category dtoToCategory(CategoryDTO categoryDTO) {
     Category category = new Category();
-    BeanUtils.copyProperties(categoryDTO,category);
+    BeanUtils.copyProperties(categoryDTO, category);
     return category;
   }
-
-
-
-
 }
