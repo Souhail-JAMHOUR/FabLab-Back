@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/equipment")
+@CrossOrigin("*")
 public class EquipmentController {
   private final EquipmentService equipmentService;
 
   @GetMapping("/all")
-  public ResponseEntity<List<EquipmentDTO>> getAllEquipments() {
+  public ResponseEntity<List<EquipmentDTO>> getAllEquipments(
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int pageSize) {
     List<EquipmentDTO> allEquipments = equipmentService.getAllEquipments();
     return ResponseEntity.ok(allEquipments);
   }
@@ -30,20 +32,24 @@ public class EquipmentController {
         equipmentService.checkEquipmentAvailabilityForAdmin(id);
     return ResponseEntity.ok(response);
   }
+
   @PostMapping("/new")
-  public ResponseEntity<EquipmentDTO>addNewEquipment(@RequestBody NewEquipmentRequest request) throws CatergoryNotFoundException {
+  public ResponseEntity<EquipmentDTO> addNewEquipment(@RequestBody NewEquipmentRequest request)
+      throws CatergoryNotFoundException {
     EquipmentDTO equipmentDTO = equipmentService.addNewEquipment(request);
     return ResponseEntity.ok(equipmentDTO);
   }
+
   @DeleteMapping("/delete/{id}")
-  public ResponseEntity<String>deleteEquipment(@PathVariable Long id) throws EquipmentNotFoundException {
+  public ResponseEntity<String> deleteEquipment(@PathVariable Long id)
+      throws EquipmentNotFoundException {
     equipmentService.deleteEquipment(id);
     return ResponseEntity.ok("Deleted");
   }
 
   @GetMapping("/search")
-  public List<EquipmentDTO> searchEquipments(@RequestParam(name = "keyword",defaultValue = "") String keyword){
-    return equipmentService.searchEquipment("%"+keyword+"%");
+  public List<EquipmentDTO> searchEquipments(
+      @RequestParam(name = "keyword", defaultValue = "") String keyword) {
+    return equipmentService.searchEquipment("%" + keyword + "%");
   }
-
 }

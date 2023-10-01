@@ -10,6 +10,9 @@ import ma.odc.fablabback.exceptions.AppUsersNotFoundException;
 import ma.odc.fablabback.mappers.UsersMapperImpl;
 import ma.odc.fablabback.repositories.Users.MemberRepository;
 import ma.odc.fablabback.services.IMemebreService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -27,14 +30,14 @@ public class MemberService implements IMemebreService {
   }
 
   @Override
-  public List<MemberDTO> getAllMembers() {
-    List<Member> all = memberRepository.findAll();
+  public Page<MemberDTO> getAllMembers(int page, int size) {
+    Page<Member> all = memberRepository.findAll(PageRequest.of(page, size));
     List<MemberDTO> memberDTOS = new ArrayList<>();
     for (Member m : all) {
       MemberDTO memberDTO = usersMapper.membreToDTO(m);
       memberDTOS.add(memberDTO);
     }
-    return memberDTOS;
+    return new PageImpl<>(memberDTOS, PageRequest.of(page, size), all.getTotalElements());
   }
 
   @Override
@@ -57,7 +60,9 @@ public class MemberService implements IMemebreService {
 
   @Override
   public MemberDTO updateMember(MemberDTO memberDTO) {
-    memberRepository.findById(memberDTO.getAppUsersId()).orElseThrow(() -> new UsernameNotFoundException("Member Not found"));
+    memberRepository
+        .findById(memberDTO.getAppUsersId())
+        .orElseThrow(() -> new UsernameNotFoundException("Member Not found"));
     Member member = usersMapper.dtoToMembre(memberDTO);
     Member saved = memberRepository.save(member);
     return usersMapper.membreToDTO(saved);
@@ -65,12 +70,20 @@ public class MemberService implements IMemebreService {
 
   @Override
   public void deleteMember(Long id) {
-    Member member = memberRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Member Not found"));
+    Member member =
+        memberRepository
+            .findById(id)
+            .orElseThrow(() -> new UsernameNotFoundException("Member Not found"));
     memberRepository.delete(member);
   }
 
-  public List<MemberDTO> searchMember(String keyword) {
-    List<MemberDTO> collected = memberRepository.searchMember(keyword).stream().map(usersMapper::membreToDTO).collect(Collectors.toList());
-    return collected;
+  public Page<MemberDTO> searchMember(String keyword, int page, int size) {
+    Page<Member> members = memberRepository.searchMember(keyword, PageRequest.of(page, size));
+    List<MemberDTO> collected =
+        memberRepository.searchMember(keyword, PageRequest.of(page, size)).stream()
+            .map(usersMapper::membreToDTO)
+            .collect(Collectors.toList());
+    //    return collected;
+    return new PageImpl<>(collected, PageRequest.of(page, size), members.getTotalElements());
   }
 }

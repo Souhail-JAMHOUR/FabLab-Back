@@ -5,6 +5,7 @@ import ma.odc.fablabback.dto.equipmentsdto.EquipmentIssueDTO;
 import ma.odc.fablabback.dto.equipmentsdto.ReservationDTO;
 import ma.odc.fablabback.exceptions.*;
 import ma.odc.fablabback.requests.EquipmentIssueRequest;
+import org.springframework.data.domain.Page;
 
 public interface IEquipmentIssueService {
   EquipmentIssueDTO createIssue(EquipmentIssueRequest request)
@@ -36,8 +37,13 @@ public interface IEquipmentIssueService {
           UnauthorizedEquipmentIssueActionException,
           EquipmentNotFoundException;
 
-  List<EquipmentIssueDTO> getAllEquipmentIssues();
+  //  List<EquipmentIssueDTO> getAllEquipmentIssues();
 
-  List<EquipmentIssueDTO> getReservationIssues(ReservationDTO reservationDTO)
+  Page<EquipmentIssueDTO> getAllEquipmentIssues(int page, int size);
+
+  //  List<EquipmentIssueDTO> getReservationIssues(ReservationDTO reservationDTO)
+  //      throws ReservationNotFoundException;
+
+  Page<EquipmentIssueDTO> getReservationIssues(ReservationDTO reservationDTO, int page, int size)
       throws ReservationNotFoundException;
 }

@@ -10,6 +10,7 @@ import ma.odc.fablabback.dto.usersdto.AppUserDTO;
 import ma.odc.fablabback.entities.Users.AppUser;
 import ma.odc.fablabback.entities.Users.Member;
 import ma.odc.fablabback.enums.Role;
+import ma.odc.fablabback.enums.Sex;
 import ma.odc.fablabback.exceptions.AppUserExistsException;
 import ma.odc.fablabback.mappers.UserMapper;
 import ma.odc.fablabback.mappers.UsersMapperImpl;
@@ -20,6 +21,9 @@ import ma.odc.fablabback.requests.AuthenticationResponse;
 import ma.odc.fablabback.requests.UserRegisterRequest;
 import ma.odc.fablabback.services.UserService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,7 +53,7 @@ public class UserServiceImpl implements UserService {
   public AppUserDTO addNewMembre(UserRegisterRequest request) throws AppUserExistsException {
     AppUser appUser = appUsersRepository.findByAppUsersname(request.getUsername()).orElse(null);
     if (appUser != null) {
-      throw new AppUserExistsException("User does not exists");
+      throw new AppUserExistsException("Username exists");
     }
     if (!request.getPassword().equals(request.getConfirmedPassword())) {
       throw new RuntimeException("Passwords does not match");
@@ -57,16 +61,16 @@ public class UserServiceImpl implements UserService {
 
     Member newMembre =
         Member.builder()
-            .birthDate(request.getBirthDate())
+            .birthDate(null)
             .name(request.getName())
-            .cin(request.getCin())
-            .sex(request.getSex())
+            .cin("")
+            .sex(Sex.UNDEFINED)
             .role(Role.MEMBER)
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
             .appUsersname(request.getUsername())
-            .status(request.getStatus())
-            .etablissment(request.getEtablissment())
+            .status(null)
+            .etablissment(null)
             .build();
     Member savedUser = memberRepository.save(newMembre);
     return userMapper.appUserToDTO(savedUser);
@@ -78,49 +82,56 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-      Authentication authentication =
-          authenticationManager.authenticate(
-              new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+  public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-      //    ! System.out.println("****************AUTH**************************");
+    //    ! System.out.println("****************AUTH**************************");
 
-      String scopes =
-          authentication.getAuthorities().stream()
-              .map(GrantedAuthority::getAuthority)
-              .collect(Collectors.joining(" "));
+    String scopes =
+        authentication.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.joining(" "));
 
-      Instant instant = Instant.now();
+    Instant instant = Instant.now();
 
-      JwtClaimsSet jwtClaimsSet =
-          JwtClaimsSet.builder()
-              .issuer("FabLab")
-              .issuedAt(instant)
-              .expiresAt(instant.plus(expiration, ChronoUnit.MINUTES))
-              .subject(request.getUsername())
-              .claim("scope", scopes)
-              .build();
-      JwtEncoderParameters jwtEncoderParameters =
-          JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).type("Jwt").build(), jwtClaimsSet);
-      String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
-      return AuthenticationResponse.builder().accessToken(jwt).build();
-    }
-
-  @Override
-  public List<AppUserDTO> getAllUsers() {
-    List<AppUser> all = appUsersRepository.findAll();
-    List<AppUserDTO> dtos = new ArrayList<>();
-
-    for (AppUser user : all) {
-      AppUserDTO appUserDTO = usersMapper.appUserToDTO(user);
-      dtos.add(appUserDTO);
-    }
-    return dtos;
+    JwtClaimsSet jwtClaimsSet =
+        JwtClaimsSet.builder()
+            .issuer("FabLab")
+            .issuedAt(instant)
+            .expiresAt(instant.plus(expiration, ChronoUnit.MINUTES))
+            .subject(request.getUsername())
+            .claim("scope", scopes)
+            .build();
+    JwtEncoderParameters jwtEncoderParameters =
+        JwtEncoderParameters.from(
+            JwsHeader.with(MacAlgorithm.HS256).type("Jwt").build(), jwtClaimsSet);
+    String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
+    return AuthenticationResponse.builder().accessToken(jwt).build();
   }
 
   @Override
-    public List<AppUserDTO> searchUser(String keyword) {
-      List<AppUserDTO> collected = appUsersRepository.searchUser(keyword).stream().map(userMapper::appUserToDTO).collect(Collectors.toList());
-      return collected;
+  public Page<AppUserDTO> getAllUsers(int page, int size) {
+    Page<AppUser> all = appUsersRepository.findAll(PageRequest.of(page, size));
+    List<AppUserDTO> dtos = new ArrayList<>();
+
+    for (AppUser user : all.getContent()) {
+      AppUserDTO appUserDTO = usersMapper.appUserToDTO(user);
+      dtos.add(appUserDTO);
     }
+    return new PageImpl<>(dtos, PageRequest.of(page, size), all.getTotalElements());
+  }
+
+  @Override
+  public Page<AppUserDTO> searchUser(String keyword, int page, int size) {
+
+    Page<AppUser> appUsers = appUsersRepository.searchUser(keyword, PageRequest.of(page, size));
+    List<AppUserDTO> collected =
+        appUsersRepository.searchUser(keyword, PageRequest.of(page, size)).stream()
+            .map(userMapper::appUserToDTO)
+            .collect(Collectors.toList());
+    //    return collected;
+    return new PageImpl<>(collected, PageRequest.of(page, size), appUsers.getTotalElements());
+  }
 }

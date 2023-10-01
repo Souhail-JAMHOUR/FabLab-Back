@@ -41,7 +41,7 @@ public class SuperAdminService implements ISuperAdminService {
     Admin admin =
         adminRepository
             .findById(id)
-            .orElseThrow(() -> new AppUsersNotFoundException("No user found"));
+            .orElseThrow(() -> new AppUsersNotFoundException("No Admin found"));
     adminRepository.delete(admin);
   }
 }

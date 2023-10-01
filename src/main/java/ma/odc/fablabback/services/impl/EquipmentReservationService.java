@@ -17,6 +17,9 @@ import ma.odc.fablabback.repositories.equipments.EquipmentReservationRepository;
 import ma.odc.fablabback.requests.EquipmentAvailabilityRequest;
 import ma.odc.fablabback.requests.EquipmentReservationRequest;
 import ma.odc.fablabback.services.IEquipmentReservationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,13 +32,16 @@ public class EquipmentReservationService implements IEquipmentReservationService
   private EquipmentService equipmentService;
 
   @Override
-  public List<EquipmentReservationDTO> getAllEquipmentReservations() {
-    List<EquipmentReservation> all = equipmentReservationRepository.findAll();
-    List<EquipmentReservationDTO> equipmentReservationDTOS = new ArrayList<>();
-    for (EquipmentReservation e : all) {
-      equipmentReservationDTOS.add(equipmentMapper.equipmentReservationToDTO(e));
-    }
-    return equipmentReservationDTOS;
+  public Page<EquipmentReservationDTO> getAllEquipmentReservations(int page, int size) {
+    Page<EquipmentReservation> all =
+        equipmentReservationRepository.findAll(PageRequest.of(page, size));
+    List<EquipmentReservationDTO> collect =
+        all.getContent().stream()
+            .map(
+                equipmentReservation ->
+                    equipmentMapper.equipmentReservationToDTO(equipmentReservation))
+            .collect(Collectors.toList());
+    return new PageImpl<>(collect, PageRequest.of(page, size), all.getTotalElements());
   }
 
   @Override

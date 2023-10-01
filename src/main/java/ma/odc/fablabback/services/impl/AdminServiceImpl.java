@@ -13,6 +13,9 @@ import ma.odc.fablabback.repositories.Users.AdminRepository;
 import ma.odc.fablabback.repositories.Users.AppUsersRepository;
 import ma.odc.fablabback.requests.AuthenticationRequest;
 import ma.odc.fablabback.services.IAdminService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,7 +46,7 @@ public class AdminServiceImpl implements IAdminService {
     return adminDTOS;
   }
 
-  public AdminDTO getAdminByName(String username) throws AppUsersNotFoundException {
+  public AdminDTO getAdminByUsername(String username) throws AppUsersNotFoundException {
     Admin admin =
         adminRepository
             .findByAppUsersname(username)
@@ -52,11 +55,12 @@ public class AdminServiceImpl implements IAdminService {
     return adminDTO;
   }
 
-  public List<AdminDTO> searchAdmin(String keyword) {
+  public Page<AdminDTO> searchAdmin(String keyword, int page, int size) {
+    Page<Admin> admins = adminRepository.searchAdmins(keyword, PageRequest.of(page, size));
     List<AdminDTO> collected =
-        adminRepository.searchAdmins(keyword).stream()
+        adminRepository.searchAdmins(keyword, PageRequest.of(page, size)).stream()
             .map(usersMapper::adminToDTO)
             .collect(Collectors.toList());
-    return collected;
+    return new PageImpl<>(collected, PageRequest.of(page, size), admins.getTotalElements());
   }
 }

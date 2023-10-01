@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/reservation/")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ReservationController {
   private final ReservationService reservationService;
   private final MemberService memberService;
@@ -45,19 +46,7 @@ public class ReservationController {
     }
   }
 
-  @PostMapping("/approve/")
-  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
-  public ResponseEntity<ReservationDTO> approveReservation(
-      @RequestBody ReservationDTO reservationDto)
-      throws UnAuthorizedReservationAction,
-          AppUsersNotFoundException,
-          UnsatisfiedRequirementException,
-          EquipmentNotFoundException {
-    ReservationDTO reservationDTO = reservationService.approveReservation(reservationDto);
-    return ResponseEntity.ok(reservationDTO);
-  }
-
-  @PostMapping("/create")
+  @PutMapping("/create")
   @PreAuthorize("hasAuthority('SCOPE_MEMBER')")
   public ResponseEntity<ReservationDTO> createReservation(
       @RequestBody ReservationRequest reservationRequest)
@@ -68,7 +57,7 @@ public class ReservationController {
     return ResponseEntity.ok(reservationDTO);
   }
 
-  @PostMapping("/approve/{id}")
+  @PutMapping("/approve/{id}")
   @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> approveReservation(@PathVariable String id)
       throws UnAuthorizedReservationAction,
@@ -80,7 +69,7 @@ public class ReservationController {
     return ResponseEntity.ok(reservationDTO);
   }
 
-  @PostMapping("/cancel/{id}")
+  @PutMapping("/cancel/{id}")
   @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> cancelReservation(@PathVariable String id)
       throws UnAuthorizedReservationAction,
@@ -91,19 +80,7 @@ public class ReservationController {
     return ResponseEntity.ok(reservationDTO);
   }
 
-  @PostMapping("/cancel/")
-  @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
-  public ResponseEntity<ReservationDTO> cancelReservation(
-      @RequestBody ReservationDTO reservationDTO)
-      throws UnAuthorizedReservationAction,
-          AppUsersNotFoundException,
-          ReservationNotFoundException {
-
-    reservationService.cancelReservation(reservationDTO);
-    return ResponseEntity.ok(reservationDTO);
-  }
-
-  @PostMapping("/start/{id}")
+  @PutMapping("/start/{id}")
   @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> startReservation(@PathVariable String id)
       throws UnAuthorizedReservationAction,
@@ -113,7 +90,7 @@ public class ReservationController {
     return ResponseEntity.ok(reservationDTO);
   }
 
-  @PostMapping("/end/{id}")
+  @PutMapping("/end/{id}")
   @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> endReservation(@PathVariable String id)
       throws UnAuthorizedReservationAction,
@@ -123,7 +100,7 @@ public class ReservationController {
     return ResponseEntity.ok(reservationDTO);
   }
 
-  @PostMapping("/reject/{id}")
+  @PutMapping("/reject/{id}")
   @PreAuthorize("hasAuthority('SCOPE_SUPER_ADMIN') or hasAuthority('SCOPE_ADMIN')")
   public ResponseEntity<ReservationDTO> rejectReservation(@PathVariable String id)
       throws UnAuthorizedReservationAction,

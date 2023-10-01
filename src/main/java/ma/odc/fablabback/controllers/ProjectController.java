@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("v1/projects")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ProjectController {
   private final ProjectService projectService;
 
@@ -79,7 +80,8 @@ public class ProjectController {
   }
 
   @GetMapping("/search")
-  public List<ProjectDTO> searchProjects(@RequestParam(name = "keyword",defaultValue = "") String keyword){
-    return projectService.searchProject("%"+keyword+"%");
+  public List<ProjectDTO> searchProjects(
+      @RequestParam(name = "keyword", defaultValue = "") String keyword) {
+    return projectService.searchProject("%" + keyword + "%");
   }
 }

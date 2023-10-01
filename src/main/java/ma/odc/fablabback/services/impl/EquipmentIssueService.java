@@ -15,6 +15,9 @@ import ma.odc.fablabback.mappers.EquipmentMapper;
 import ma.odc.fablabback.repositories.equipments.EquipmentIssueRepository;
 import ma.odc.fablabback.requests.EquipmentIssueRequest;
 import ma.odc.fablabback.services.IEquipmentIssueService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -115,22 +118,28 @@ public class EquipmentIssueService implements IEquipmentIssueService {
   }
 
   @Override
-  public List<EquipmentIssueDTO> getAllEquipmentIssues() {
+  public Page<EquipmentIssueDTO> getAllEquipmentIssues(int page, int size) {
+    Page<EquipmentIssue> all = equipmentIssueRepository.findAll(PageRequest.of(page, size));
     List<EquipmentIssueDTO> equipmentIssueDTOS =
-        equipmentIssueRepository.findAll().stream()
+        equipmentIssueRepository.findAll(PageRequest.of(page, size)).stream()
             .map(issue -> equipmentMapper.equipmentIssueToDTO(issue))
             .collect(Collectors.toList());
-    return equipmentIssueDTOS;
+    return new PageImpl<>(equipmentIssueDTOS, PageRequest.of(page, size), all.getTotalElements());
   }
 
   @Override
-  public List<EquipmentIssueDTO> getReservationIssues(ReservationDTO reservationDTO)
-      throws ReservationNotFoundException {
+  public Page<EquipmentIssueDTO> getReservationIssues(
+      ReservationDTO reservationDTO, int page, int size) throws ReservationNotFoundException {
     Reservation reservation = reservationService.getReservation(reservationDTO.getReservationId());
+    Page<EquipmentIssue> all =
+        equipmentIssueRepository.findByEquipmentReservation_Reservation(
+            reservation, PageRequest.of(page, size));
     List<EquipmentIssueDTO> equipmentIssueDTOS =
-        equipmentIssueRepository.findByEquipmentReservation_Reservation(reservation).stream()
+        equipmentIssueRepository
+            .findByEquipmentReservation_Reservation(reservation, PageRequest.of(page, size))
+            .stream()
             .map(equipmentIssue -> equipmentMapper.equipmentIssueToDTO(equipmentIssue))
             .collect(Collectors.toList());
-    return equipmentIssueDTOS;
+    return new PageImpl<>(equipmentIssueDTOS, PageRequest.of(page, size), all.getTotalElements());
   }
 }

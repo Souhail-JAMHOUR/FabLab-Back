@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ma.odc.fablabback.entities.Docs.Project;
 import ma.odc.fablabback.entities.equipments.Reservation;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @AllArgsConstructor
 @Data
@@ -18,10 +20,8 @@ import ma.odc.fablabback.entities.equipments.Reservation;
 @Table(name = "MEMBERS")
 public class Member extends AppUser {
 
-  @Column(nullable = false)
   private String status;
 
-  @Column(nullable = false)
   private String etablissment;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "member")

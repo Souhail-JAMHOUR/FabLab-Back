@@ -45,7 +45,7 @@ public class FabLabBackApplication {
               .birthDate(LocalDate.now())
               .role(Role.SUPER_ADMIN)
               .poste("Super Admin")
-              .sex(Sex.HOMME)
+              .sex(Sex.MALE)
               .build();
       appUsersRepository.save(superAdmin);
 
@@ -58,7 +58,7 @@ public class FabLabBackApplication {
                         .cin("F34334")
                         .password(passwordEncoder.encode("admin"))
                         .birthDate(LocalDate.now())
-                        .sex(Sex.HOMME)
+                        .sex(Sex.MALE)
                         .email(n + "@gmail.com")
                         .role(Role.ADMIN)
                         .name(n)
@@ -72,7 +72,7 @@ public class FabLabBackApplication {
                         .cin("F34334")
                         .password(passwordEncoder.encode("member"))
                         .birthDate(LocalDate.now())
-                        .sex(Sex.HOMME)
+                        .sex(Sex.MALE)
                         .email(n + "@gmail.com")
                         .role(Role.MEMBER)
                         .name(n)
@@ -94,14 +94,9 @@ public class FabLabBackApplication {
           .forEach(
               c -> {
                 Equipment equipment =
-                    Equipment.builder()
-                        .category(c)
-                        .quantity(50)
-                        .name("Name " + c.getId())
-                        .build();
+                    Equipment.builder().category(c).quantity(50).name("Name " + c.getId()).build();
                 equipmentRepository.save(equipment);
               });
-      
     };
   }
 }

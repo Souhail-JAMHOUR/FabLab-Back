@@ -25,10 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class EquipmentService implements IEquipmentService {
-  private EquipmentMapper equipmentMapper;
-  private EquipmentRepository equipmentRepository;
-  private EquipmentReservationService equipmentReservationService;
-  private CategoryService categoryService;
+  private final EquipmentMapper equipmentMapper;
+  private final EquipmentRepository equipmentRepository;
+  private final EquipmentReservationService equipmentReservationService;
+  private final CategoryService categoryService;
 
   public EquipmentService(
       EquipmentMapper equipmentMapper,

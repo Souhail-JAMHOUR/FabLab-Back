@@ -113,7 +113,7 @@ public class ReservationService implements IReservationService {
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String adminUsername = authentication.getName();
-    AdminDTO adminByName = adminService.getAdminByName(adminUsername);
+    AdminDTO adminByName = adminService.getAdminByUsername(adminUsername);
     Admin admin = usersMapper.dtoToAdmin(adminByName);
     reservation.setAdmin(admin);
     return reservationRepository.save(reservation);

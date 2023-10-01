@@ -22,18 +22,6 @@ public interface EquipmentReservationRepository
           LocalDate startDate2,
           LocalDate endDate2);
 
-  //  List<EquipmentReservation>
-  //
-  // findAllByEquipmentAndReservation_ReservationStateAndReservation_EndDateBetweenOrEquipmentAndReservation_ReservationStateAndReservation_StartDateBetween(
-  //          Equipment equipment1,
-  //          EReservationState state1,
-  //          LocalDate startDate,
-  //          LocalDate endDate,
-  //          Equipment equipment2,
-  //          EReservationState state2,
-  //          LocalDate startDate2,
-  //          LocalDate endDate2);
-
   List<EquipmentReservation>
       findAllByEquipmentAndReservation_ReservationStateInAndReservation_StartDateBetweenOrEquipmentAndReservation_ReservationStateInAndReservation_EndDateBetween(
           Equipment equipment1,
@@ -45,11 +33,20 @@ public interface EquipmentReservationRepository
           LocalDate startDate2,
           LocalDate endDate2);
 
+  Page<EquipmentReservation>
+      findAllByEquipmentAndReservation_ReservationStateInAndReservation_StartDateBetweenOrEquipmentAndReservation_ReservationStateInAndReservation_EndDateBetween(
+          Equipment equipment1,
+          List<EReservationState> states1,
+          LocalDate startDate1,
+          LocalDate endDate1,
+          Equipment equipment2,
+          List<EReservationState> states2,
+          LocalDate startDate2,
+          LocalDate endDate2,
+          Pageable pageable);
+
   Page<EquipmentReservation> findAllByEquipmentOrderByReservation_StartDateAsc(
       Equipment equipment, Pageable pageable);
-
-  //  @Query("select a from EquipmentReservation a where a.equipment = :e")
-  //  List<EquipmentReservation> findAvailableForAdmin()
 
   List<EquipmentReservation>
       findAllByEquipmentAndReservation_ReservationStateInAndReservation_StartDateLessThanEqualAndReservation_EndDateGreaterThanEqual(

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/auth")
+@CrossOrigin("*")
 public class AuthenticationController {
   private final UserServiceImpl userService;
 
@@ -23,10 +24,8 @@ public class AuthenticationController {
   }
 
   @PostMapping("/signin")
-  public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+  public ResponseEntity<AuthenticationResponse> authenticate(
+      @RequestBody AuthenticationRequest request) {
     return ResponseEntity.ok(userService.authenticate(request));
   }
-
-
-  
 }

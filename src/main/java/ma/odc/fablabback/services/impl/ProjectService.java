@@ -130,7 +130,7 @@ public class ProjectService implements IProjectService {
   public Project setProjectAdmin(Project project) throws AppUsersNotFoundException {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String adminUsername = authentication.getName();
-    AdminDTO adminByName = adminService.getAdminByName(adminUsername);
+    AdminDTO adminByName = adminService.getAdminByUsername(adminUsername);
     Admin admin = usersMapper.dtoToAdmin(adminByName);
     project.setAdmin(admin);
     return projectRepository.save(project);
