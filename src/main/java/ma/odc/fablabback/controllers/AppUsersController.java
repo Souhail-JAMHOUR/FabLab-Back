@@ -39,7 +39,6 @@ public class AppUsersController {
       @RequestParam(name = "page", defaultValue = "0") int page,
       @RequestParam(name = "size", defaultValue = "5") int size,
       @RequestParam(name = "keyword", defaultValue = "") String keyword) {
-
     return userService.searchUser("%" + keyword + "%", page, size);
   }
 
